@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Delbert Zhou | STAR RESIDENCE REAL ESTATE</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Delbert Zhou, Broker at ANJIA REALTY INC. – STAR RESIDENCE REAL ESTATE. Buying & selling homes in Ontario, Canada. 看房视频、卖房房源、买房案例、房产知识与攻略。" />
+  <style>
+    :root {
+      --primary: #004c97;
+      --accent: #f0b429;
+      --bg: #f5f7fb;
+      --text: #222;
+      --muted: #666;
+      --card-bg: #ffffff;
+      --border-radius: 12px;
+      --shadow: 0 8px 20px rgba(0,0,0,0.06);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+    header {
+      background: linear-gradient(135deg, var(--primary), #012b52);
+      color: #fff;
+      padding: 16px 24px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    .header-inner {
+      max-width: 1080px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .brand {
+      display: flex;
+      flex-direction: column;
+    }
+    .brand-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+    }
+    .brand-sub {
+      font-size: 0.8rem;
+      opacity: 0.9;
+    }
+    nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+    nav a {
+      color: #fff;
+      text-decoration: none;
+      font-size: 0.85rem;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+    nav a:hover {
+      background: rgba(255,255,255,0.12);
+    }
+    .lang-toggle {
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.5);
+      background: rgba(0,0,0,0.15);
+      padding: 4px 8px;
+      font-size: 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .lang-toggle button {
+      border: none;
+      background: transparent;
+      color: #fff;
+      font-size: 0.8rem;
+      padding: 3px 6px;
+      border-radius: 999px;
+      cursor: pointer;
+      opacity: 0.7;
+    }
+    .lang-toggle button.active {
+      background: #fff;
+      color: var(--primary);
+      opacity: 1;
+    }
+    main {
+      max-width: 1080px;
+      margin: 18px auto 40px;
+      padding: 0 16px;
+    }
+    .top-section {
+      display: grid;
+      grid-template-columns: minmax(0, 2.1fr) minmax(0, 1.4fr);
+      gap: 20px;
+      margin-bottom: 24px;
+    }
+    @media (max-width: 820px) {
+      .top-section { grid-template-columns: 1fr; }
+      header { padding: 12px 16px; }
+      .header-inner { flex-direction: column; align-items: flex-start; gap: 8px; }
+    }
+    .card {
+      background: var(--card-bg);
+      border-radius: var(--border-radius);
+      padding: 18px 18px 16px;
+      box-shadow: var(--shadow);
+    }
+    .section-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .section-title span.icon {
+      font-size: 1.2rem;
+    }
+    .about-name { font-size: 1.35rem; font-weight: 700; margin-bottom: 4px; }
+    .about-role { color: var(--muted); font-size: 0.9rem; margin-bottom: 8px; }
+    .badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin: 6px 0 10px;
+    }
+    .badge {
+      font-size: 0.72rem;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: rgba(0,76,151,0.08);
+      color: var(--primary);
+      border: 1px solid rgba(0,76,151,0.18);
+    }
+    .info-grid {
+      display: grid;
+      grid-template-columns: minmax(0,1.1fr) minmax(0,1.2fr);
+      gap: 10px;
+      font-size: 0.88rem;
+      margin-bottom: 8px;
+    }
+    @media (max-width: 600px) {
+      .info-grid { grid-template-columns: 1fr; }
+    }
+    .info-grid div strong {
+      font-weight: 600;
+    }
+    .muted { color: var(--muted); font-size: 0.85rem; }
+    .counter {
+      font-size: 0.88rem;
+      margin-top: 6px;
+    }
+    .counter span {
+      font-weight: 600;
+      color: var(--primary);
+    }
+    .sections-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+      margin-top: 10px;
+    }
+    .post-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 6px;
+    }
+    .post {
+      padding: 10px 11px;
+      border-radius: 10px;
+      border: 1px solid rgba(0,0,0,0.04);
+      background: #fafbff;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      font-size: 0.86rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .post.pinned {
+      border-color: var(--accent);
+      background: #fffaf1;
+    }
+    .post-title {
+      font-weight: 600;
+    }
+    .post-meta {
+      font-size: 0.76rem;
+      color: var(--muted);
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .pin-label {
+      position: absolute;
+      top: 6px;
+      right: 8px;
+      font-size: 0.7rem;
+      background: var(--accent);
+      color: #fff;
+      padding: 2px 6px;
+      border-radius: 999px;
+    }
+    .contact-mini {
+      font-size: 0.86rem;
+      display: grid;
+      gap: 4px;
+    }
+    .contact-mini a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+    .contact-mini a:hover {
+      text-decoration: underline;
+    }
+
+    /* Popup form */
+    .popup-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.45);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 200;
+    }
+    .popup {
+      background: #fff;
+      max-width: 420px;
+      width: 90%;
+      border-radius: 14px;
+      padding: 18px 18px 16px;
+      box-shadow: 0 14px 40px rgba(0,0,0,0.25);
+      animation: popin 0.22s ease-out;
+    }
+    @keyframes popin {
+      from { opacity: 0; transform: translateY(8px) scale(0.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .popup-title {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+    .popup-text {
+      font-size: 0.86rem;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+    .form-grid {
+      display: grid;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    label {
+      font-size: 0.8rem;
+      font-weight: 500;
+      display: block;
+      margin-bottom: 2px;
+    }
+    input, textarea {
+      width: 100%;
+      padding: 7px 8px;
+      border-radius: 8px;
+      border: 1px solid #d3d7e3;
+      font-size: 0.85rem;
+      font-family: inherit;
+    }
+    input:focus, textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 1px rgba(0,76,151,0.18);
+    }
+    .popup-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-top: 4px;
+    }
+    .btn {
+      border-radius: 999px;
+      border: none;
+      padding: 6px 12px;
+      font-size: 0.85rem;
+      cursor: pointer;
+    }
+    .btn-primary {
+      background: var(--primary);
+      color: #fff;
+    }
+    .btn-secondary {
+      background: #edf0f7;
+      color: var(--text);
+    }
+    .success-msg {
+      font-size: 0.8rem;
+      color: green;
+      margin-top: 4px;
+    }
+    footer {
+      max-width: 1080px;
+      margin: 0 auto 24px;
+      padding: 0 16px;
+      font-size: 0.8rem;
+      color: var(--muted);
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-inner">
+      <div class="brand">
+        <div class="brand-title" data-i18n-en="STAR RESIDENCE REAL ESTATE" data-i18n-zh="星寓地产 STAR RESIDENCE REAL ESTATE">
+          STAR RESIDENCE REAL ESTATE
+        </div>
+        <div class="brand-sub">
+          <span data-i18n-en="Broker: Delbert Zhou · ANJIA REALTY INC." data-i18n-zh="经纪：周德波（Delbert Zhou） · 安家地产 ANJIA REALTY INC.">
+            Broker: Delbert Zhou · ANJIA REALTY INC.
+          </span>
+        </div>
+      </div>
+      <nav>
+        <a href="#videos" data-i18n-en="Viewing Videos" data-i18n-zh="看房视频">Viewing Videos</a>
+        <a href="#listings" data-i18n-en="Listings for Sale" data-i18n-zh="卖房房源">Listings for Sale</a>
+        <a href="#cases" data-i18n-en="Buyer Cases" data-i18n-zh="买房案例">Buyer Cases</a>
+        <a href="#knowledge" data-i18n-en="Real Estate Guides" data-i18n-zh="房产知识与攻略">Real Estate Guides</a>
+        <a href="#contact" data-i18n-en="Contact" data-i18n-zh="联系">Contact</a>
+        <div class="lang-toggle">
+          <span style="font-size:0.75rem;">🌐</span>
+          <button type="button" class="lang-btn active" data-lang="en">EN</button>
+          <button type="button" class="lang-btn" data-lang="zh">中文</button>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="top-section">
+      <!-- About / Info -->
+      <div class="card" id="about">
+        <div class="section-title">
+          <span class="icon">👤</span>
+          <span data-i18n-en="About Delbert" data-i18n-zh="关于 Delbert">About Delbert</span>
+        </div>
+        <div class="about-name">Delbert Zhou 周德波</div>
+        <div class="about-role" data-i18n-en="Broker · Ontario Registered Real Estate Professional" data-i18n-zh="安省注册地产经纪 · Broker">
+          Broker · Ontario Registered Real Estate Professional
+        </div>
+        <div class="badges">
+          <span class="badge" data-i18n-en="Buyer Representation" data-i18n-zh="买方代理">Buyer Representation</span>
+          <span class="badge" data-i18n-en="Seller / Listing Service" data-i18n-zh="卖方 / 挂牌服务">Seller / Listing Service</span>
+          <span class="badge" data-i18n-en="Investment Properties" data-i18n-zh="投资物业">Investment Properties</span>
+        </div>
+        <p class="muted" data-i18n-en="
+          I help families and investors buy and sell homes across the Greater Toronto Area with professional, honest and detail-oriented real estate service.
+        " data-i18n-zh="
+          我服务于多伦多及周边地区的家庭与投资客，提供专业、诚信、细致的买房、卖房及投资地产服务。
+        ">
+          I help families and investors buy and sell homes across the Greater Toronto Area with professional, honest and detail-oriented real estate service.
+        </p>
+
+        <div class="info-grid">
+          <div>
+            <strong data-i18n-en="Broker:" data-i18n-zh="地产经纪：">Broker:</strong><br/>
+            Delbert Zhou<br/>
+            <span data-i18n-en="Registration Number:" data-i18n-zh="注册编号：">Registration Number:</span> 5042936
+          </div>
+          <div>
+            <strong data-i18n-en="Brokerage:" data-i18n-zh="所属经纪行：">Brokerage:</strong><br/>
+            ANJIA REALTY INC.<br/>
+            3601 Hwy 7 Unit 308<br/>
+            Markham, ON L3R 0M3
+          </div>
+        </div>
+
+        <div class="info-grid" style="margin-top:4px;">
+          <div>
+            <strong data-i18n-en="Company (Sole Proprietorship):" data-i18n-zh="独资公司：">Company (Sole Proprietorship):</strong><br/>
+            STAR RESIDENCE REAL ESTATE
+          </div>
+          <div class="contact-mini">
+            <div>📞 <strong>Phone:</strong> <a href="tel:19056173988">905-617-3988</a></div>
+            <div>✉️ <strong>Email:</strong> <a href="mailto:delbertzhou11@gmail.com">delbertzhou11@gmail.com</a></div>
+            <div>💬 <strong>WeChat:</strong> Z_9056173988</div>
+          </div>
+        </div>
+
+        <div class="counter">
+          <span data-i18n-en="Visits from this browser:" data-i18n-zh="本设备访问次数：">Visits from this browser:</span>
+          <span id="visitCount">1</span>
+        </div>
+        <div class="muted" style="margin-top:4px;" data-i18n-en="(For a global visitor counter, your developer can connect this to a simple backend service.)" data-i18n-zh="（如需全站统计访问量，可让开发人员连接后台统计服务。）">
+          (For a global visitor counter, your developer can connect this to a simple backend service.)
+        </div>
+      </div>
+
+      <!-- Contact prompt -->
+      <div class="card" id="contact">
+        <div class="section-title">
+          <span class="icon">📞</span>
+          <span data-i18n-en="Contact & Consultation" data-i18n-zh="预约咨询">Contact & Consultation</span>
+        </div>
+        <p class="muted" data-i18n-en="
+          Looking to buy, sell or invest in real estate? Leave your contact information and I will follow up personally.
+        " data-i18n-zh="
+          如果您有买房、卖房或投资地产的计划，欢迎留下您的联系方式，我会亲自与您联系。
+        ">
+          Looking to buy, sell or invest in real estate? Leave your contact information and I will follow up personally.
+        </p>
+
+        <form id="inlineContactForm" class="form-grid">
+          <div>
+            <label data-i18n-en="Name" data-i18n-zh="姓名">Name</label>
+            <input type="text" name="name" required />
+          </div>
+          <div>
+            <label data-i18n-en="Phone" data-i18n-zh="电话">Phone</label>
+            <input type="tel" name="phone" required />
+          </div>
+          <div>
+            <label data-i18n-en="Email" data-i18n-zh="邮箱">Email</label>
+            <input type="email" name="email" />
+          </div>
+          <div>
+            <label>WeChat</label>
+            <input type="text" name="wechat" />
+          </div>
+          <div>
+            <label>WhatsApp</label>
+            <input type="text" name="whatsapp" />
+          </div>
+        </form>
+        <div class="popup-actions" style="margin-top:4px; justify-content:flex-start;">
+          <button class="btn btn-primary" type="button" id="inlineSubmitBtn" data-i18n-en="Send Inquiry (Demo)" data-i18n-zh="发送咨询（示例）">
+            Send Inquiry (Demo)
+          </button>
+        </div>
+        <div id="inlineSuccess" class="success-msg" style="display:none;" data-i18n-en="Thank you! Your inquiry has been recorded (demo only)." data-i18n-zh="谢谢！您的信息已记录（演示用，本页暂未连接后台）。">
+          Thank you! Your inquiry has been recorded (demo only).
+        </div>
+        <p class="muted" style="margin-top:6px;" data-i18n-en="
+          *This demo form stores data only in your browser console. Ask your developer to connect it to email or a CRM system.
+        " data-i18n-zh="
+          *本示例表单暂时只在浏览器中记录数据，可让开发人员接入邮箱或CRM系统实现真正收集。
+        ">
+          *This demo form stores data only in your browser console. Ask your developer to connect it to email or a CRM system.
+        </p>
+      </div>
+    </section>
+
+    <!-- Content sections -->
+    <section class="card" id="videos">
+      <div class="section-title">
+        <span class="icon">🎥</span>
+        <span data-i18n-en="Viewing Videos" data-i18n-zh="看房视频">Viewing Videos</span>
+      </div>
+      <p class="muted" data-i18n-en="Latest property tour videos. You can embed YouTube or other video links here." data-i18n-zh="这里可以嵌入最新的看房视频，例如 YouTube 影片链接。">
+        Latest property tour videos. You can embed YouTube or other video links here.
+      </p>
+      <div class="post-list">
+        <article class="post pinned">
+          <div class="pin-label" data-i18n-en="Pinned" data-i18n-zh="置顶">Pinned</div>
+          <div class="post-title" data-i18n-en="Downtown Toronto Lakeview 2BR Condo Tour" data-i18n-zh="多伦多市中心湖景两房公寓实拍">
+            Downtown Toronto Lakeview 2BR Condo Tour
+          </div>
+          <div class="post-meta">
+            <span>2025-01-01</span>
+            <span data-i18n-en="Example video link – replace with your own." data-i18n-zh="示例视频条目，可替换为自己的链接。">Example video link – replace with your own.</span>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="sections-grid" style="margin-top:18px;">
+      <!-- Listings -->
+      <section class="card" id="listings">
+        <div class="section-title">
+          <span class="icon">🏡</span>
+          <span data-i18n-en="Listings for Sale" data-i18n-zh="卖房房源">Listings for Sale</span>
+        </div>
+        <p class="muted" data-i18n-en="Featured and recent listings represented by Delbert." data-i18n-zh="展示由 Delbert 负责的精选和最新挂牌房源。">
+          Featured and recent listings represented by Delbert.
+        </p>
+        <div class="post-list">
+          <article class="post pinned">
+            <div class="pin-label" data-i18n-en="Pinned" data-i18n-zh="置顶">Pinned</div>
+            <div class="post-title" data-i18n-en="Sample Listing: Markham 4-Bedroom Detached Home" data-i18n-zh="示例房源：万锦四房独立屋">
+              Sample Listing: Markham 4-Bedroom Detached Home
+            </div>
+            <div class="post-meta">
+              <span>2025-01-02</span>
+              <span data-i18n-en="Replace this card with your real listing details and photos." data-i18n-zh="可替换为真实房源信息与图片链接。">Replace this card with your real listing details and photos.</span>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- Buyer cases -->
+      <section class="card" id="cases">
+        <div class="section-title">
+          <span class="icon">🤝</span>
+          <span data-i18n-en="Buyer Cases" data-i18n-zh="买房案例">Buyer Cases</span>
+        </div>
+        <p class="muted" data-i18n-en="Real stories of buyers successfully closing their homes with Delbert." data-i18n-zh="记录客户成功买房的真实案例与故事。">
+          Real stories of buyers successfully closing their homes with Delbert.
+        </p>
+        <div class="post-list">
+          <article class="post pinned">
+            <div class="pin-label" data-i18n-en="Pinned" data-i18n-zh="置顶">Pinned</div>
+            <div class="post-title" data-i18n-en="First-Time Home Buyer Secured Condo in Downtown Toronto" data-i18n-zh="首置家庭成功入手多伦多市中心公寓">
+              First-Time Home Buyer Secured Condo in Downtown Toronto
+            </div>
+            <div class="post-meta">
+              <span>2024-12-20</span>
+              <span data-i18n-en="Example buyer case. Replace with actual client stories." data-i18n-zh="示例案例，可替换为真实客户故事。">Example buyer case. Replace with actual client stories.</span>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- Knowledge / guides -->
+      <section class="card" id="knowledge">
+        <div class="section-title">
+          <span class="icon">📘</span>
+          <span data-i18n-en="Real Estate Knowledge & Guides" data-i18n-zh="房产知识与攻略">Real Estate Knowledge & Guides</span>
+        </div>
+        <p class="muted" data-i18n-en="Articles, market updates, tax tips and buying/selling strategies." data-i18n-zh="分享买卖房流程、市场解读、税务小贴士和实战攻略。">
+          Articles, market updates, tax tips and buying/selling strategies.
+        </p>
+        <div class="post-list">
+          <article class="post pinned">
+            <div class="pin-label" data-i18n-en="Pinned" data-i18n-zh="置顶">Pinned</div>
+            <div class="post-title" data-i18n-en="Guide: Steps to Buy a Home in Ontario" data-i18n-zh="攻略：安省买房流程全解析">
+              Guide: Steps to Buy a Home in Ontario
+            </div>
+            <div class="post-meta">
+              <span>2024-11-15</span>
+              <span data-i18n-en="Introductory guide. You can keep adding new articles here." data-i18n-zh="入门攻略示例，后续可以不断新增文章。">Introductory guide. You can keep adding new articles here.</span>
+            </div>
+          </article>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <!-- Popup for time-on-site lead capture -->
+  <div class="popup-backdrop" id="popupBackdrop">
+    <div class="popup">
+      <div class="popup-title" data-i18n-en="Let’s Stay in Touch" data-i18n-zh="欢迎留下联系方式">
+        Let’s Stay in Touch
+      </div>
+      <div class="popup-text" data-i18n-en="
+        You’ve been browsing for a while. If you have any questions about buying, selling or investing, leave your contact and I will follow up personally.
+      " data-i18n-zh="
+        感谢您浏览本网站，如有买房、卖房或投资需求，欢迎留下您的联系方式，我会尽快与您联系。
+      ">
+        You’ve been browsing for a while. If you have any questions about buying, selling or investing, leave your contact and I will follow up personally.
+      </div>
+      <form id="popupForm" class="form-grid">
+        <div>
+          <label data-i18n-en="Name" data-i18n-zh="姓名">Name</label>
+          <input type="text" name="name" required />
+        </div>
+        <div>
+          <label data-i18n-en="Phone" data-i18n-zh="电话">Phone</label>
+          <input type="tel" name="phone" required />
+        </div>
+        <div>
+          <label data-i18n-en="Email" data-i18n-zh="邮箱">Email</label>
+          <input type="email" name="email" />
+        </div>
+        <div>
+          <label>WeChat</label>
+          <input type="text" name="wechat" />
+        </div>
+        <div>
+          <label>WhatsApp</label>
+          <input type="text" name="whatsapp" />
+        </div>
+      </form>
+      <div class="popup-actions">
+        <button class="btn btn-secondary" type="button" id="popupCloseBtn" data-i18n-en="Later" data-i18n-zh="下次再说">Later</button>
+        <button class="btn btn-primary" type="button" id="popupSubmitBtn" data-i18n-en="Send (Demo)" data-i18n-zh="发送（示例）">Send (Demo)</button>
+      </div>
+      <div id="popupSuccess" class="success-msg" style="display:none;" data-i18n-en="Thank you! Your information has been recorded (demo only)." data-i18n-zh="谢谢！您的信息已记录（演示用，尚未连接后台）。">
+        Thank you! Your information has been recorded (demo only).
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    © <span id="year"></span> STAR RESIDENCE REAL ESTATE · Broker: Delbert Zhou · ANJIA REALTY INC.
+  </footer>
+
+  <script>
+    // Visitor counter (per browser)
+    (function() {
+      const key = "delbert_visit_count";
+      let count = parseInt(localStorage.getItem(key) || "0", 10);
+      count += 1;
+      localStorage.setItem(key, count.toString());
+      document.getElementById("visitCount").textContent = count;
+    })();
+
+    // Popup after time on page (e.g., 45 seconds) – only once per browser
+    (function() {
+      const popupSeenKey = "delbert_popup_seen";
+      if (localStorage.getItem(popupSeenKey) === "1") return;
+      setTimeout(() => {
+        document.getElementById("popupBackdrop").style.display = "flex";
+      }, 45000); // 45 seconds
+      document.getElementById("popupCloseBtn").addEventListener("click", () => {
+        document.getElementById("popupBackdrop").style.display = "none";
+        localStorage.setItem(popupSeenKey, "1");
+      });
+    })();
+
+    // Simple demo form handling
+    function handleFormSubmit(formId, successId) {
+      const form = document.getElementById(formId);
+      const success = document.getElementById(successId);
+      if (!form || !success) return;
+      const data = {};
+      Array.from(form.elements).forEach(el => {
+        if (el.name) data[el.name] = el.value;
+      });
+      console.log("Form submitted (" + formId + "):", data);
+      success.style.display = "block";
+      setTimeout(() => { success.style.display = "none"; }, 4000);
+      form.reset();
+    }
+
+    document.getElementById("inlineSubmitBtn").addEventListener("click", () => {
+      handleFormSubmit("inlineContactForm", "inlineSuccess");
+    });
+    document.getElementById("popupSubmitBtn").addEventListener("click", () => {
+      handleFormSubmit("popupForm", "popupSuccess");
+      localStorage.setItem("delbert_popup_seen", "1");
+    });
+
+    // Language toggle
+    const langButtons = document.querySelectorAll(".lang-btn");
+    function setLanguage(lang) {
+      langButtons.forEach(btn => {
+        btn.classList.toggle("active", btn.dataset.lang === lang);
+      });
+      const elems = document.querySelectorAll("[data-i18n-en]");
+      elems.forEach(el => {
+        const en = el.getAttribute("data-i18n-en");
+        const zh = el.getAttribute("data-i18n-zh");
+        el.textContent = (lang === "zh" && zh) ? zh.trim() : (en || "").trim();
+      });
+      document.documentElement.lang = (lang === "zh" ? "zh-Hans" : "en");
+      localStorage.setItem("delbert_lang", lang);
+    }
+    langButtons.forEach(btn => {
+      btn.addEventListener("click", () => setLanguage(btn.dataset.lang));
+    });
+    // Load saved language
+    const savedLang = localStorage.getItem("delbert_lang") || "en";
+    setLanguage(savedLang);
+
+    // Year in footer
+    document.getElementById("year").textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
