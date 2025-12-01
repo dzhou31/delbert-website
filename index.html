@@ -280,6 +280,34 @@
 .info-grid a:hover {
   text-decoration: underline;
 }
+
+/* --- QR Code Grid --- */
+.qr-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 18px;
+  margin-top: 14px;
+}
+.qr-item {
+  text-align: center;
+  width: 120px;
+}
+.qr-item img {
+  width: 120px;
+  height: 120px;
+  border-radius: 12px;
+  object-fit: cover;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  border: 1px solid rgba(0,0,0,0.08);
+}
+.qr-label {
+  font-size: 0.82rem;
+  color: #004c97;
+  margin-top: 4px;
+  font-weight: 500;
+}
+
     
   </style>
 </head>
@@ -820,6 +848,7 @@
   </script>
 </body>
 </html>
+
 
 
 
