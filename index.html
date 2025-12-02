@@ -867,6 +867,9 @@
   </footer>
 
   <script>
+    
+    const FORM_ENDPOINT = 'https://script.google.com/macros/s/AKfycbxHXUJ4XswIckOMfXJ-dfjUGtpRzXdlntOFKZMXq2p6HAwEvlkNxO8IoWNgkeZZyQRORg/exec'; 
+    
     // 年份
     document.getElementById("year").textContent = new Date().getFullYear();
 
@@ -901,28 +904,52 @@
     const savedLang = localStorage.getItem("dz_lang") || "en";
     setLanguage(savedLang);
 
-    // 简单表单提交（示例）：打印到 console + 显示“已记录”
-    function handleFormSubmit(formId, successId){
-      const form = document.getElementById(formId);
-      const success = document.getElementById(successId);
-      if (!form || !success) return;
-      const data = {};
-      Array.from(form.elements).forEach(el => {
-        if (el.name) data[el.name] = el.value;
-      });
-      console.log("Form submitted ("+formId+"):", data);
-      success.style.display = "block";
-      setTimeout(() => { success.style.display = "none"; }, 4000);
-      form.reset();
-    }
+    // 简单表单提交：
+// 通用提交函数：把指定 form 的数据 POST 到 Google Apps Script
+async function submitFormToBackend(formId, successId, sourceTag) {
+  const form = document.getElementById(formId);
+  const success = document.getElementById(successId);
+  if (!form || !success) return;
 
-    document.getElementById("inlineSubmitBtn").addEventListener("click", () => {
-      handleFormSubmit("inlineContactForm", "inlineSuccess");
+  const formData = new FormData(form);
+  // 增加来源字段，方便区分是哪个表单
+  formData.append('source', sourceTag);
+
+  try {
+    const res = await fetch(FORM_ENDPOINT, {
+      method: 'POST',
+      body: formData
     });
-    document.getElementById("popupSubmitBtn").addEventListener("click", () => {
-      handleFormSubmit("popupForm", "popupSuccess");
-      localStorage.setItem("dz_popup_seen","1");
-    });
+
+    if (!res.ok) throw new Error('Network response was not ok');
+
+    const data = await res.json();
+    console.log('Form submitted:', data);
+
+    // 显示成功提示
+    success.style.display = 'block';
+    setTimeout(() => { success.style.display = 'none'; }, 4000);
+
+    // 清空表单
+    form.reset();
+  } catch (err) {
+    console.error('Form submit error:', err);
+    alert('提交失败，请稍后再试 / Failed to submit, please try again later.');
+  }
+}
+
+// 绑定两个按钮：主页表单 + 弹窗表单
+document.getElementById("inlineSubmitBtn").addEventListener("click", () => {
+  submitFormToBackend("inlineContactForm", "inlineSuccess", "inline");
+});
+
+document.getElementById("popupSubmitBtn").addEventListener("click", () => {
+  submitFormToBackend("popupForm", "popupSuccess", "popup");
+  localStorage.setItem("dz_popup_seen","1");
+});
+
+
+
 
     // 停留一定时间后弹出窗口（例如 40 秒），只出现一次
     (function(){
@@ -941,6 +968,7 @@
   </script>
 </body>
 </html>
+
 
 
 
