@@ -308,6 +308,65 @@
   font-weight: 500;
 }
 
+
+    /* --- Video cover grid --- */
+.video-grid {
+  display: grid;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+/* 桌面：3~4列，手机：2列 */
+@media (min-width: 1000px) {
+  .video-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+@media (min-width: 640px) and (max-width: 999px) {
+  .video-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (max-width: 639px) {
+  .video-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+.video-card {
+  background: #fafbff;
+  border-radius: 10px;
+  padding: 6px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.04);
+}
+
+.video-thumb-link {
+  display: block;
+}
+
+.video-thumb {
+  width: 100%;
+  aspect-ratio: 10 / 13; /* 高度 = 宽度 x 1.3 */
+  object-fit: cover;
+  border-radius: 8px;
+  display: block;
+  border: 1px solid rgba(0,0,0,0.08);
+}
+
+.video-info {
+  margin-top: 5px;
+}
+
+.video-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.video-meta {
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+.video-desc {
+  font-size: 0.82rem;
+  color: var(--muted);
+  margin-top: 3px;
+}
+
     
   </style>
 </head>
@@ -500,19 +559,28 @@
       </p>
       <div class="post-list">
         <!-- 示例置顶视频 -->
-<article class="post pinned">
-  <div class="pin-label" data-i18n-en="Pinned" data-i18n-zh="置顶">Pinned</div>
-  <div class="post-title"
-       data-i18n-en="Layout of a 4B, 4Ba, 2Garage detached house in Berczy, Markham"
-       data-i18n-zh="万锦Berczy4卧4卫2车独立屋的布局">
-    Layout of a 4B, 4Ba, 2Garage detached house in Berczy, Markham
-  </div>
-  <div class="post-meta">
-    <span>Today</span>
-    <span>📹 <a href="https://www.youtube.com/shorts/LJ1qHCAV6Us" target="_blank">Watch on YouTube</a></span>
-    <span data-i18n-en="Property tour video." data-i18n-zh="房源实拍视频。">Property tour video.</span>
+
+<article class="video-card">
+  <a class="video-thumb-link"
+     href="https://www.youtube.com/shorts/LJ1qHCAV6Us"
+     target="_blank" rel="noopener">
+    <img src="2025120201.jpg" alt="Layout of a 4B, 4Ba, 2Garage detached house in Berczy, Markham" class="video-thumb">
+  </a>
+  <div class="video-info">
+    <div class="video-title"
+         data-i18n-en="Layout of a 4B, 4Ba, 2Garage detached house in Berczy, Markham"
+         data-i18n-zh="万锦Berczy4卧4卫2车独立屋的布局">
+      Layout of a 4B, 4Ba, 2Garage detached house in Berczy, Markham
+    </div>
+    <div class="video-meta">2025-12-02 · YouTube</div>
+    <div class="video-desc"
+         data-i18n-en="Property tour video."
+         data-i18n-zh="房源实拍视频。">
+      Property tour video.
+    </div>
   </div>
 </article>
+        
       </div>
     </section>
 
@@ -846,6 +914,7 @@
   </script>
 </body>
 </html>
+
 
 
 
