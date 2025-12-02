@@ -862,108 +862,120 @@
     © <span id="year"></span> STAR RESIDENCE REAL ESTATE · Broker: Delbert Zhou · ANJIA REALTY INC.
   </footer>
 
-  <script>
-    
-    const FORM_ENDPOINT = 'https://script.google.com/macros/s/AKfycbxHXUJ4XswIckOMfXJ-dfjUGtpRzXdlntOFKZMXq2p6HAwEvlkNxO8IoWNgkeZZyQRORg/exec'; 
-    
-    // 年份
-    document.getElementById("year").textContent = new Date().getFullYear();
+<script>
+  // 后端表单接收地址（Google Apps Script 部署后的 URL）
+  const FORM_ENDPOINT = 'https://script.google.com/macros/s/AKfycbxHXUJ4XswIckOMfXJ-dfjUGtpRzXdlntOFKZMXq2p6HAwEvlkNxO8IoWNgkeZZyQRORg/exec';
 
-    // 访问次数（本设备）
-    (function(){
-      const key = "dz_visit_count";
-      let count = parseInt(localStorage.getItem(key) || "0", 10);
-      count += 1;
-      localStorage.setItem(key, String(count));
-      const el = document.getElementById("visitCount");
-      if (el) el.textContent = count;
-    })();
+  // 年份
+  document.getElementById("year").textContent = new Date().getFullYear();
 
-    // 语言切换
-    const langButtons = document.querySelectorAll(".lang-btn");
-    function setLanguage(lang){
-      langButtons.forEach(btn => {
-        btn.classList.toggle("active", btn.dataset.lang === lang);
-      });
-      const elems = document.querySelectorAll("[data-i18n-en]");
-      elems.forEach(el => {
-        const en = el.getAttribute("data-i18n-en");
-        const zh = el.getAttribute("data-i18n-zh");
-        el.textContent = (lang === "zh" && zh) ? zh.trim() : (en || "").trim();
-      });
-      document.documentElement.lang = (lang === "zh" ? "zh-Hans" : "en");
-      localStorage.setItem("dz_lang", lang);
-    }
+  // 访问次数（本设备）
+  (function () {
+    const key = "dz_visit_count";
+    let count = parseInt(localStorage.getItem(key) || "0", 10);
+    count += 1;
+    localStorage.setItem(key, String(count));
+    const el = document.getElementById("visitCount");
+    if (el) el.textContent = count;
+  })();
+
+  // 语言切换
+  const langButtons = document.querySelectorAll(".lang-btn");
+  function setLanguage(lang) {
     langButtons.forEach(btn => {
-      btn.addEventListener("click", () => setLanguage(btn.dataset.lang));
+      btn.classList.toggle("active", btn.dataset.lang === lang);
     });
-    const savedLang = localStorage.getItem("dz_lang") || "en";
-    setLanguage(savedLang);
-
-    // 简单表单提交：
-// 通用提交函数：把指定 form 的数据 POST 到 Google Apps Script
-async function submitFormToBackend(formId, successId, sourceTag) {
-  const form = document.getElementById(formId);
-  const success = document.getElementById(successId);
-  if (!form || !success) return;
-
-  const formData = new FormData(form);
-  // 增加来源字段，方便区分是哪个表单
-  formData.append('source', sourceTag);
-
-  try {
-    const res = await fetch(FORM_ENDPOINT, {
-      method: 'POST',
-      body: formData
+    const elems = document.querySelectorAll("[data-i18n-en]");
+    elems.forEach(el => {
+      const en = el.getAttribute("data-i18n-en");
+      const zh = el.getAttribute("data-i18n-zh");
+      el.textContent = (lang === "zh" && zh) ? zh.trim() : (en || "").trim();
     });
-
-    if (!res.ok) throw new Error('Network response was not ok');
-
-    const data = await res.json();
-    console.log('Form submitted:', data);
-
-    // 显示成功提示
-    success.style.display = 'block';
-    setTimeout(() => { success.style.display = 'none'; }, 4000);
-
-    // 清空表单
-    form.reset();
-  } catch (err) {
-    console.error('Form submit error:', err);
-    alert('提交失败，请稍后再试 / Failed to submit, please try again later.');
+    document.documentElement.lang = (lang === "zh" ? "zh-Hans" : "en");
+    localStorage.setItem("dz_lang", lang);
   }
-}
+  langButtons.forEach(btn => {
+    btn.addEventListener("click", () => setLanguage(btn.dataset.lang));
+  });
+  const savedLang = localStorage.getItem("dz_lang") || "en";
+  setLanguage(savedLang);
 
-// 绑定两个按钮：主页表单 + 弹窗表单
-document.getElementById("inlineSubmitBtn").addEventListener("click", () => {
-  submitFormToBackend("inlineContactForm", "inlineSuccess", "inline");
-});
+  // 通用提交函数：把指定 form 的数据 POST 到 Google Apps Script
+  async function submitFormToBackend(formId, successId, sourceTag) {
+    const form = document.getElementById(formId);
+    const success = document.getElementById(successId);
+    if (!form || !success) return;
 
-document.getElementById("popupSubmitBtn").addEventListener("click", () => {
-  submitFormToBackend("popupForm", "popupSuccess", "popup");
-  localStorage.setItem("dz_popup_seen","1");
-});
+    const formData = new FormData(form);
+    // 增加来源字段，方便区分是哪个表单（inline / popup）
+    formData.append('source', sourceTag);
 
-
-
-
-    // 停留一定时间后弹出窗口（例如 40 秒），只出现一次
-    (function(){
-      const key = "dz_popup_seen";
-      if (localStorage.getItem(key) === "1") return;
-      setTimeout(() => {
-        const backdrop = document.getElementById("popupBackdrop");
-        if (backdrop) backdrop.style.display = "flex";
-      }, 40000); // 40 秒
-      document.getElementById("popupCloseBtn").addEventListener("click", () => {
-        const backdrop = document.getElementById("popupBackdrop");
-        backdrop.style.display = "none";
-        localStorage.setItem(key,"1");
+    try {
+      const res = await fetch(FORM_ENDPOINT, {
+        method: 'POST',
+        body: formData
       });
-    })();
-  </script>
+
+      if (!res.ok) throw new Error('Network response was not ok');
+
+      const data = await res.json();
+      console.log('Form submitted:', data);
+
+      // 显示成功提示
+      success.style.display = 'block';
+      setTimeout(() => { success.style.display = 'none'; }, 4000);
+
+      // 清空表单
+      form.reset();
+    } catch (err) {
+      console.error('Form submit error:', err);
+      alert('提交失败，请稍后再试 / Failed to submit, please try again later.');
+    }
+  }
+
+  // 绑定两个按钮：主页表单 + 弹窗表单
+  const inlineBtn = document.getElementById("inlineSubmitBtn");
+  if (inlineBtn) {
+    inlineBtn.addEventListener("click", () => {
+      submitFormToBackend("inlineContactForm", "inlineSuccess", "inline");
+    });
+  }
+
+  const popupBtn = document.getElementById("popupSubmitBtn");
+  if (popupBtn) {
+    popupBtn.addEventListener("click", () => {
+      submitFormToBackend("popupForm", "popupSuccess", "popup");
+      localStorage.setItem("dz_popup_seen", "1");
+    });
+  }
+
+  // 停留一定时间后弹出窗口（例如 40 秒），只出现一次
+  (function () {
+    const key = "dz_popup_seen";
+    if (localStorage.getItem(key) === "1") return;
+
+    setTimeout(() => {
+      const backdrop = document.getElementById("popupBackdrop");
+      if (backdrop) backdrop.style.display = "flex";
+    }, 40000); // 40 秒
+
+    const closeBtn = document.getElementById("popupCloseBtn");
+    if (closeBtn) {
+      closeBtn.addEventListener("click", () => {
+        const backdrop = document.getElementById("popupBackdrop");
+        if (backdrop) backdrop.style.display = "none";
+        localStorage.setItem(key, "1");
+      });
+    }
+  })();
+</script>
+
+
+
+  
 </body>
 </html>
+
 
 
 
