@@ -419,6 +419,116 @@ select[name="needType"]:focus {
   box-shadow: 0 5px 14px rgba(0, 76, 151, 0.25);
 }
 
+/* 每条内容的编号行 */
+.item-meta {
+  font-size: 0.78rem;
+  color: var(--muted);
+  margin-top: 4px;
+}
+.item-no {
+  display: inline-block;
+  padding: 2px 6px;
+  border-radius: 999px;
+  background: #eef3ff;
+  color: var(--primary);
+  font-weight: 600;
+}
+
+/* 详情弹窗整体 */
+.detail-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.55);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 300;
+}
+.detail-modal {
+  background: #fff;
+  max-width: 860px;
+  width: 94%;
+  max-height: 90vh;
+  border-radius: 14px;
+  padding: 16px 18px 18px;
+  box-shadow: 0 16px 40px rgba(0,0,0,0.4);
+  overflow-y: auto;
+}
+.detail-close {
+  border: none;
+  background: transparent;
+  font-size: 1.6rem;
+  cursor: pointer;
+  float: right;
+  line-height: 1;
+}
+.detail-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin: 4px 0 8px;
+}
+.detail-intro {
+  font-size: 0.9rem;
+  color: var(--muted);
+  margin-bottom: 10px;
+}
+.detail-body {
+  font-size: 0.9rem;
+  line-height: 1.7;
+}
+
+/* 详情里的视频 */
+.detail-video {
+  width: 100%;
+  max-height: 420px;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+.detail-video iframe,
+.detail-video video {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+/* 详情里的图片画廊（可横向滑动） */
+.detail-gallery {
+  margin: 10px 0;
+}
+.detail-gallery-track {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding-bottom: 4px;
+}
+.detail-gallery-track img {
+  height: 220px;
+  border-radius: 10px;
+  object-fit: cover;
+  scroll-snap-align: center;
+}
+
+/* 全图片排列 */
+.detail-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 8px;
+  margin: 10px 0;
+}
+.detail-grid img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+/* 隐藏模板 */
+.detail-template {
+  display: none;
+}
+
     
   </style>
   
@@ -630,22 +740,78 @@ select[name="needType"]:focus {
   <div class="video-grid">
     <!-- 视频 1 -->
 <article class="video-card">
-  <a class="video-thumb-link"
-     href="https://www.youtube.com/shorts/LJ1qHCAV6Us"
-     target="_blank" rel="noopener">
-    <img src="2025120201.jpg" alt="Layout of a 4-bedroom, 4-bathroom, 2-garage detached house in Berczy, Markham" class="video-thumb">
+  <a href="#" class="video-thumb-link">
+    <img src="2025120201" alt="Layout of a 4-bedroom, 4-bathroom, 2-garage detached house in Berczy, Markham" class="video-thumb">
   </a>
   <div class="video-info">
+    <div class="item-meta">
+      <span class="item-no"></span>
+    </div>
     <div class="video-title"
          data-i18n-en="Layout of a 4-bedroom, 4-bathroom, 2-garage detached house in Berczy, Markham"
          data-i18n-zh="万锦Berczy4卧4卫2车独立屋的布局">
       Layout of a 4-bedroom, 4-bathroom, 2-garage detached house in Berczy, Markham
     </div>
-    <div class="video-meta">2025-12-02 · YouTube</div>
     <div class="video-desc"
-         data-i18n-en="Property tour video."
-         data-i18n-zh="房源实拍视频。">
-      Property tour video.
+         data-i18n-en=""
+         data-i18n-zh="Berczy经典学区双车独立屋">
+      
+    </div>
+  </div>
+  <div class="detail-template" data-detail-type="video">
+    <div class="detail-title"
+         data-i18n-en="Layout of a 4-bedroom, 4-bathroom, 2-garage detached house in Berczy, Markham"
+         data-i18n-zh="万锦Berczy4卧4卫2车独立屋的布局">
+      万锦Berczy4卧4卫2车独立屋的布局
+    </div>
+    <div class="detail-intro"
+         data-i18n-en=""
+         data-i18n-zh="Berczy经典学区双车独立屋">
+      Berczy经典学区双车独立屋
+    </div>
+    <div class="detail-video">
+      <iframe src="https://www.youtube.com/shorts/LJ1qHCAV6Us" allowfullscreen></iframe>
+    </div>
+    <div class="detail-body"
+         data-i18n-en=""
+         data-i18n-zh="【安家地产｜全新上市】
+Berczy经典学区双车独立屋
+📍 地址｜96 Brock Ave, Markham
+     McCowan Rd / Major Mackenzie Dr
+💰叫价：$1,898,000
+
+🏠 房屋介绍：
+✅ 4+1房 6卫｜屋主精心保养
+✅ 车位：2车库 + 4私家车道｜共6车位
+✅ 地下室可独立出入，可分租
+✅ 全屋全新油漆，全屋专业景观设计
+✅ 前院铺砖地面，厨房装修电器全面升级
+
+🏫 学区 & 生活配套：
+* 顶级学区：Beckett Farm Public School & Pierre Elliott Trudeau High School
+* 步行可达公园 & 社区巴士站
+* 附近有超市、餐厅、咖啡店，数分钟可达 Markville Mall
+* 驾车直达 Angus Glen 社区中心 & 图书馆
+* 快速通达 Hwy 404 / 407，交通便利">
+      【安家地产｜全新上市】
+Berczy经典学区双车独立屋
+📍 地址｜96 Brock Ave, Markham
+     McCowan Rd / Major Mackenzie Dr
+💰叫价：$1,898,000
+
+🏠 房屋介绍：
+✅ 4+1房 6卫｜屋主精心保养
+✅ 车位：2车库 + 4私家车道｜共6车位
+✅ 地下室可独立出入，可分租
+✅ 全屋全新油漆，全屋专业景观设计
+✅ 前院铺砖地面，厨房装修电器全面升级
+
+🏫 学区 & 生活配套：
+* 顶级学区：Beckett Farm Public School & Pierre Elliott Trudeau High School
+* 步行可达公园 & 社区巴士站
+* 附近有超市、餐厅、咖啡店，数分钟可达 Markville Mall
+* 驾车直达 Angus Glen 社区中心 & 图书馆
+* 快速通达 Hwy 404 / 407，交通便利
     </div>
   </div>
 </article>
@@ -1007,6 +1173,15 @@ select[name="needType"]:focus {
 
   </div>
 
+  <!-- 详情弹窗 -->
+  <div class="detail-backdrop" id="detailBackdrop">
+    <div class="detail-modal">
+      <button class="detail-close" id="detailCloseBtn">&times;</button>
+      <div id="detailContent"></div>
+    </div>
+  </div>
+
+    
   <footer>
     © <span id="year"></span> STAR RESIDENCE REAL ESTATE · Broker: Delbert Zhou · ANJIA REALTY INC.
   </footer>
@@ -1147,6 +1322,62 @@ select[name="needType"]:focus {
   setupNeedFields("needTypeInline", "sellFieldsInline", "buyFieldsInline");
   // 弹窗表单
   setupNeedFields("needTypePopup", "sellFieldsPopup", "buyFieldsPopup");
+
+  // ==== 1. 每个栏目自动编号（按出现顺序 #1 #2 #3...）====
+  document.querySelectorAll("section.card").forEach(section => {
+    const cards = section.querySelectorAll(".video-card");
+    cards.forEach((card, idx) => {
+      const noEl = card.querySelector(".item-no");
+      if (noEl) {
+        noEl.textContent = "#" + (idx + 1);
+      }
+    });
+  });
+
+  // ==== 2. 点击封面图片打开详情弹窗 ====
+  const backdrop = document.getElementById("detailBackdrop");
+  const detailContent = document.getElementById("detailContent");
+  const detailCloseBtn = document.getElementById("detailCloseBtn");
+
+  function openDetailFromCard(card) {
+    const tpl = card.querySelector(".detail-template");
+    if (!tpl || !detailContent || !backdrop) return;
+
+    // 把模板内容复制到弹窗
+    detailContent.innerHTML = tpl.innerHTML;
+
+    // 重新应用当前语言（因为复制了新的 data-i18n 元素）
+    const currentLang = localStorage.getItem("dz_lang") || "en";
+    setLanguage(currentLang);
+
+    backdrop.style.display = "flex";
+  }
+
+  document.addEventListener("click", (e) => {
+    const link = e.target.closest(".video-thumb-link");
+    if (!link) return;
+    const card = link.closest(".video-card");
+    if (!card) return;
+
+    e.preventDefault(); // 阻止原本的跳转
+    openDetailFromCard(card);
+  });
+
+  if (detailCloseBtn && backdrop) {
+    detailCloseBtn.addEventListener("click", () => {
+      backdrop.style.display = "none";
+      detailContent.innerHTML = "";
+    });
+
+    backdrop.addEventListener("click", (e) => {
+      if (e.target === backdrop) {
+        backdrop.style.display = "none";
+        detailContent.innerHTML = "";
+      }
+    });
+  }
+
+  
 </script>
 
 
@@ -1154,6 +1385,7 @@ select[name="needType"]:focus {
   
 </body>
 </html>
+
 
 
 
