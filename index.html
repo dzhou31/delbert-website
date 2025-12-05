@@ -5,6 +5,7 @@
   <title>Delbert Zhou | STAR RESIDENCE REAL ESTATE</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="Delbert Zhou, Broker (Registration #5042936) at ANJIA REALTY INC. Founder of STAR RESIDENCE REAL ESTATE. Real estate services in Greater Toronto Area. 多伦多及周边买房卖房与房产投资服务。" />
+ 
   <style>
     :root {
       --primary:#004c97;
@@ -367,8 +368,33 @@
   margin-top: 3px;
 }
 
+    /* --- 提交按钮样式升级 --- */
+#inlineSubmitBtn, 
+#popupSubmitBtn {
+  display: inline-block;
+  width: 100%;
+  background: var(--primary);
+  color: #fff;
+  font-weight: 700;
+  font-size: 1rem;
+  padding: 12px 0;
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 76, 151, 0.2);
+  transition: all 0.25s ease;
+}
+
+#inlineSubmitBtn:hover,
+#popupSubmitBtn:hover {
+  background: #013f7d;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(0, 76, 151, 0.3);
+}
+
     
   </style>
+  
 </head>
 <body>
   <header>
@@ -486,11 +512,7 @@
           <span data-i18n-en="Visits from this device:" data-i18n-zh="本设备访问次数：">Visits from this device:</span>
           <span id="visitCount" class="value">1</span>
         </div>
-        <div class="muted" style="margin-top:2px;font-size:.8rem;"
-             data-i18n-en="(For a global visitor count, a simple backend or analytics tool can be added later.)"
-             data-i18n-zh="（如需全站总访问量，后续可接入简单后台或统计工具。）">
-          (For a global visitor count, a simple backend or analytics tool can be added later.)
-        </div>
+
       </div>
 
       <!-- Contact & lead form -->
@@ -1105,6 +1127,7 @@
   
 </body>
 </html>
+
 
 
 
