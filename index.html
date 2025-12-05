@@ -368,20 +368,47 @@
   margin-top: 3px;
 }
 
-    /* --- 提交按钮样式升级 --- */
+/* --- 买房/卖房下拉框更醒目 --- */
+select[name="needType"] {
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 9px 10px;
+  border-radius: 10px;
+  border: 2px solid var(--primary);
+  background-color: #f9fbff;
+  color: var(--primary);
+  box-shadow: 0 2px 8px rgba(0, 76, 151, 0.15);
+  appearance: none;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+select[name="needType"]:hover {
+  background-color: #eef4ff;
+  box-shadow: 0 3px 10px rgba(0, 76, 151, 0.25);
+}
+
+select[name="needType"]:focus {
+  outline: none;
+  border-color: #013f7d;
+  background-color: #fff;
+  box-shadow: 0 0 0 3px rgba(0, 76, 151, 0.2);
+}
+    
+
+/* --- 提交按钮样式（中等大小） --- */
 #inlineSubmitBtn, 
 #popupSubmitBtn {
   display: inline-block;
-  width: 100%;
   background: var(--primary);
   color: #fff;
   font-weight: 700;
-  font-size: 1rem;
-  padding: 12px 0;
+  font-size: 0.95rem;
+  padding: 9px 22px;
   border: none;
   border-radius: 999px;
   cursor: pointer;
-  box-shadow: 0 4px 12px rgba(0, 76, 151, 0.2);
+  box-shadow: 0 3px 10px rgba(0, 76, 151, 0.2);
   transition: all 0.25s ease;
 }
 
@@ -389,7 +416,7 @@
 #popupSubmitBtn:hover {
   background: #013f7d;
   transform: translateY(-1px);
-  box-shadow: 0 6px 16px rgba(0, 76, 151, 0.3);
+  box-shadow: 0 5px 14px rgba(0, 76, 151, 0.25);
 }
 
     
@@ -1127,6 +1154,7 @@
   
 </body>
 </html>
+
 
 
 
