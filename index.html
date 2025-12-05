@@ -561,18 +561,6 @@
 </form>
 
 
-        <div style="margin-top:6px;">
-          <button class="btn btn-primary" type="button" id="inlineSubmitBtn"
-                  data-i18n-en="Send Inquiry "
-                  data-i18n-zh="发送咨询">
-            Send Inquiry 
-          </button>
-        </div>
-        <div id="inlineSuccess" class="success-msg"
-             data-i18n-en="Thank you! Your inquiry has been recorded (demo only)."
-             data-i18n-zh="谢谢！您的信息已记录。">
-          Thank you! Your inquiry has been recorded.
-        </div>
 
       </div>
     </section>
@@ -966,18 +954,8 @@
                 data-i18n-zh="下次再说">
           Later
         </button>
-        <button class="btn btn-primary" type="button" id="popupSubmitBtn"
-                data-i18n-en="Send"
-                data-i18n-zh="发送">
-          Send  
-        </button>
       </div>
-      <div id="popupSuccess" class="success-msg"
-           data-i18n-en="Thank you! Your information has been recorded."
-           data-i18n-zh="谢谢！您的信息已记录。">
-        Thank you! Your information has been recorded.
-      </div>
-    </div>
+
   </div>
 
   <footer>
@@ -1091,27 +1069,6 @@
     }
   })();
 
-
-  // 动态显示买房 / 卖房额外字段
-  const needSelect = document.getElementById("needType");
-  const sellFields = document.getElementById("sellFields");
-  const buyFields  = document.getElementById("buyFields");
-
-  if (needSelect) {
-    needSelect.addEventListener("change", () => {
-      if (needSelect.value === "sell") {
-        sellFields.style.display = "block";
-        buyFields.style.display  = "none";
-      } else if (needSelect.value === "buy") {
-        sellFields.style.display = "none";
-        buyFields.style.display  = "block";
-      } else {
-        sellFields.style.display = "none";
-        buyFields.style.display  = "none";
-      }
-    });
-  }
-
   // ===== 买房 / 卖房 需求切换（首页 + 弹窗） =====
   function setupNeedFields(needId, sellId, buyId) {
     const select = document.getElementById(needId);
@@ -1141,8 +1098,6 @@
   setupNeedFields("needTypeInline", "sellFieldsInline", "buyFieldsInline");
   // 弹窗表单
   setupNeedFields("needTypePopup", "sellFieldsPopup", "buyFieldsPopup");
-
-  
 </script>
 
 
@@ -1150,6 +1105,7 @@
   
 </body>
 </html>
+
 
 
 
