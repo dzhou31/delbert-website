@@ -1146,6 +1146,15 @@ Berczy经典学区双车独立屋
    
   </main>
 
+  <!-- 详情弹窗 -->
+  <div class="detail-backdrop" id="detailBackdrop">
+    <div class="detail-modal">
+      <button class="detail-close" id="detailCloseBtn">&times;</button>
+      <div id="detailContent"></div>
+    </div>
+  </div>
+
+  
   <!-- Popup lead capture -->
   <div class="popup-backdrop" id="popupBackdrop">
     <div class="popup">
@@ -1226,13 +1235,6 @@ Berczy经典学区双车独立屋
 
   </div>
 
-  <!-- 详情弹窗 -->
-  <div class="detail-backdrop" id="detailBackdrop">
-    <div class="detail-modal">
-      <button class="detail-close" id="detailCloseBtn">&times;</button>
-      <div id="detailContent"></div>
-    </div>
-  </div>
 
     
   <footer>
@@ -1241,7 +1243,7 @@ Berczy经典学区双车独立屋
 
 <script>
   // 后端表单接收地址（Google Apps Script 部署后的 URL）
-  const FORM_ENDPOINT = 'https://script.google.com/macros/s/AKfycbzoBFE_akQuKOJgierTDfaQRFsyd_it0rKu80wfd0VEWUHmBj8PDbCIYegQGtB50outCQ/exec';
+  const FORM_ENDPOINT = 'https://script.google.com/macros/s/AKfycbxHXUJ4XswIckOMfXJ-dfjUGtpRzXdlntOFKZMXq2p6HAwEvlkNxO8IoWNgkeZZyQRORg/exec';
 
   // 年份
   document.getElementById("year").textContent = new Date().getFullYear();
@@ -1376,7 +1378,7 @@ Berczy经典学区双车独立屋
   // 弹窗表单
   setupNeedFields("needTypePopup", "sellFieldsPopup", "buyFieldsPopup");
 
-  // ==== 1. 每个栏目自动编号（按出现顺序 #1 #2 #3...）====
+  // ==== 1. 每个栏目自动编号（#1, #2, #3...）====
   document.querySelectorAll("section.card").forEach(section => {
     const cards = section.querySelectorAll(".video-card");
     cards.forEach((card, idx) => {
@@ -1388,56 +1390,61 @@ Berczy经典学区双车独立屋
   });
 
   // ==== 2. 点击封面图片打开详情弹窗 ====
-  const backdrop = document.getElementById("detailBackdrop");
-  const detailContent = document.getElementById("detailContent");
+  const detailBackdrop = document.getElementById("detailBackdrop");
+  const detailContent  = document.getElementById("detailContent");
   const detailCloseBtn = document.getElementById("detailCloseBtn");
 
   function openDetailFromCard(card) {
+    if (!detailBackdrop || !detailContent) return;
     const tpl = card.querySelector(".detail-template");
-    if (!tpl || !detailContent || !backdrop) return;
-
-    // 把模板内容复制到弹窗
+    if (!tpl) {
+      console.warn("该条目没有 detail-template，点击无效果");
+      return;
+    }
+    // 将模板内容放入弹窗
     detailContent.innerHTML = tpl.innerHTML;
 
-    // 重新应用当前语言（因为复制了新的 data-i18n 元素）
+    // 再次应用当前语言（因为新注入了 data-i18n 元素）
     const currentLang = localStorage.getItem("dz_lang") || "en";
     setLanguage(currentLang);
 
-    backdrop.style.display = "flex";
+    detailBackdrop.style.display = "flex";
   }
 
+  // 事件委托：监听所有 .video-thumb-link 点击
   document.addEventListener("click", (e) => {
     const link = e.target.closest(".video-thumb-link");
     if (!link) return;
     const card = link.closest(".video-card");
     if (!card) return;
 
-    e.preventDefault(); // 阻止原本的跳转
+    e.preventDefault(); // 阻止 <a> 的默认跳转
     openDetailFromCard(card);
   });
 
-  if (detailCloseBtn && backdrop) {
+  // 关闭详情弹窗
+  if (detailCloseBtn && detailBackdrop) {
     detailCloseBtn.addEventListener("click", () => {
-      backdrop.style.display = "none";
+      detailBackdrop.style.display = "none";
       detailContent.innerHTML = "";
     });
 
-    backdrop.addEventListener("click", (e) => {
-      if (e.target === backdrop) {
-        backdrop.style.display = "none";
+    detailBackdrop.addEventListener("click", (e) => {
+      if (e.target === detailBackdrop) {
+        detailBackdrop.style.display = "none";
         detailContent.innerHTML = "";
       }
     });
   }
-
-  
 </script>
+
 
 
 
   
 </body>
 </html>
+
 
 
 
