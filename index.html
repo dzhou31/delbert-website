@@ -786,9 +786,18 @@ select[name="needType"]:focus {
          data-i18n-zh="Berczy经典学区双车独立屋">
       Berczy经典学区双车独立屋
     </div>
+
     <div class="detail-video">
-      <iframe src="https://www.youtube.com/shorts/LJ1qHCAV6Us" allowfullscreen></iframe>
-    </div>
+  <iframe 
+    src="https://www.youtube.com/embed/LJ1qHCAV6Us" 
+    title="YouTube video player"
+    frameborder="0"
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+    allowfullscreen>
+  </iframe>
+   </div>
+
+    
     <div class="detail-body"
          data-i18n-en=""
          data-i18n-zh="【安家地产｜全新上市】
@@ -1446,19 +1455,38 @@ Berczy经典学区双车独立屋
 
   function openDetailFromCard(card) {
     if (!detailBackdrop || !detailContent) return;
+
     const tpl = card.querySelector(".detail-template");
     if (!tpl) {
       console.warn("该条目没有 detail-template");
       return;
     }
+
+    // 把模板内容塞进弹窗
     detailContent.innerHTML = tpl.innerHTML;
 
-    // 弹窗里的文字也按当前语言切一次
+    // ⭐ 自动分段逻辑：如果 detail-body 里面没有 <p>，就按换行自动拆成多段
+    const body = detailContent.querySelector(".detail-body");
+    if (body && !body.innerHTML.includes("<p")) {
+      const raw = body.textContent.trim();
+      if (raw) {
+        // 按空行或换行切分
+        const parts = raw
+          .split(/\r?\n\r?\n|[\r\n]+/)
+          .map(t => t.trim())
+          .filter(t => t.length > 0);
+
+        body.innerHTML = parts.map(t => `<p>${t}</p>`).join("");
+      }
+    }
+
+    // 弹窗里的文字也按当前语言切一次（不会改 detail-body，因为上面在 setLanguage 里已经跳过它）
     const currentLang = localStorage.getItem("dz_lang") || "en";
     setLanguage(currentLang);
 
     detailBackdrop.style.display = "flex";
   }
+
 
   // 点击封面触发
   document.addEventListener("click", (e) => {
@@ -1492,6 +1520,7 @@ Berczy经典学区双车独立屋
   
 </body>
 </html>
+
 
 
 
