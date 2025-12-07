@@ -1284,14 +1284,15 @@ Berczy经典学区双车独立屋
     © <span id="year"></span> STAR RESIDENCE REAL ESTATE · Broker: Delbert Zhou · ANJIA REALTY INC.
   </footer>
 
-<script>
-  // 后端表单接收地址（Google Apps Script 部署后的 URL）
-  const FORM_ENDPOINT = 'https://script.google.com/macros/s/AKfycbxHXUJ4XswIckOMfXJ-dfjUGtpRzXdlntOFKZMXq2p6HAwEvlkNxO8IoWNgkeZZyQRORg/exec';
 
-  // 年份
+<script>
+  // ===== 表单后端地址 =====
+  const FORM_ENDPOINT =
+    'https://script.google.com/macros/s/AKfycbxHXUJ4XswIckOMfXJ-dfjUGtpRzXdlntOFKZMXq2p6HAwEvlkNxO8IoWNgkeZZyQRORg/exec';
+
+  // ===== 年份 & 访问次数 =====
   document.getElementById("year").textContent = new Date().getFullYear();
 
-  // 访问次数（本设备）
   (function () {
     const key = "dz_visit_count";
     let count = parseInt(localStorage.getItem(key) || "0", 10);
@@ -1301,39 +1302,49 @@ Berczy经典学区双车独立屋
     if (el) el.textContent = count;
   })();
 
-  // 语言切换
-
+  // ===== 语言切换（修正版，不破坏详情里的 <p>）=====
   const langButtons = document.querySelectorAll(".lang-btn");
-function setLanguage(lang) {
-  // 顶部按钮
+
+  function setLanguage(lang) {
+    // 顶部按钮状态
+    langButtons.forEach(btn => {
+      btn.classList.toggle("active", btn.dataset.lang === lang);
+    });
+
+    const elems = document.querySelectorAll("[data-i18n-en]");
+    elems.forEach(el => {
+      // ⭐ 详情正文如果以后加 data-i18n，也不要用 textContent 覆盖 HTML 段落
+      if (el.classList.contains("detail-body")) return;
+
+      const en = (el.getAttribute("data-i18n-en") || "").trim();
+      const zh = (el.getAttribute("data-i18n-zh") || "").trim();
+
+      const text = (lang === "zh" && zh) ? zh : en;
+      if (text) {
+        el.textContent = text;
+      }
+    });
+
+    document.documentElement.lang = (lang === "zh" ? "zh-Hans" : "en");
+    localStorage.setItem("dz_lang", lang);
+  }
+
+  // 绑定按钮点击
   langButtons.forEach(btn => {
-    btn.classList.toggle("active", btn.dataset.lang === lang);
+    btn.addEventListener("click", () => setLanguage(btn.dataset.lang));
   });
 
-  const elems = document.querySelectorAll("[data-i18n-en]");
-  elems.forEach(el => {
-    // ⭐ 不要动详情正文，保持里面的 <p> 不被覆盖
-    if (el.classList.contains("detail-body")) return;
+  // 初始语言
+  const savedLang = localStorage.getItem("dz_lang") || "en";
+  setLanguage(savedLang);
 
-    const en = el.getAttribute("data-i18n-en");
-    const zh = el.getAttribute("data-i18n-zh");
-    el.textContent = (lang === "zh" && zh) ? (zh || "").trim()
-                                           : (en || "").trim();
-  });
-
-  document.documentElement.lang = (lang === "zh" ? "zh-Hans" : "en");
-  localStorage.setItem("dz_lang", lang);
-}
-
-
-  // 通用提交函数：把指定 form 的数据 POST 到 Google Apps Script
+  // ===== 提交表单到后端 =====
   async function submitFormToBackend(formId, successId, sourceTag) {
     const form = document.getElementById(formId);
     const success = document.getElementById(successId);
     if (!form || !success) return;
 
     const formData = new FormData(form);
-    // 增加来源字段，方便区分是哪个表单（inline / popup）
     formData.append('source', sourceTag);
 
     try {
@@ -1343,15 +1354,11 @@ function setLanguage(lang) {
       });
 
       if (!res.ok) throw new Error('Network response was not ok');
-
       const data = await res.json();
       console.log('Form submitted:', data);
 
-      // 显示成功提示
       success.style.display = 'block';
       setTimeout(() => { success.style.display = 'none'; }, 4000);
-
-      // 清空表单
       form.reset();
     } catch (err) {
       console.error('Form submit error:', err);
@@ -1359,7 +1366,7 @@ function setLanguage(lang) {
     }
   }
 
-  // 绑定两个按钮：主页表单 + 弹窗表单
+  // ===== 绑定两个表单按钮 =====
   const inlineBtn = document.getElementById("inlineSubmitBtn");
   if (inlineBtn) {
     inlineBtn.addEventListener("click", () => {
@@ -1375,7 +1382,7 @@ function setLanguage(lang) {
     });
   }
 
-  // 停留一定时间后弹出窗口（例如 40 秒），只出现一次
+  // ===== 停留 40 秒后弹出联系窗口（只出现一次）=====
   (function () {
     const key = "dz_popup_seen";
     if (localStorage.getItem(key) === "1") return;
@@ -1383,7 +1390,7 @@ function setLanguage(lang) {
     setTimeout(() => {
       const backdrop = document.getElementById("popupBackdrop");
       if (backdrop) backdrop.style.display = "flex";
-    }, 40000); // 40 秒
+    }, 40000);
 
     const closeBtn = document.getElementById("popupCloseBtn");
     if (closeBtn) {
@@ -1395,7 +1402,7 @@ function setLanguage(lang) {
     }
   })();
 
-  // ===== 买房 / 卖房 需求切换（首页 + 弹窗） =====
+  // ===== 买房 / 卖房 需求切换（首页 + 弹窗）=====
   function setupNeedFields(needId, sellId, buyId) {
     const select = document.getElementById(needId);
     const sell   = document.getElementById(sellId);
@@ -1417,26 +1424,22 @@ function setLanguage(lang) {
     };
 
     select.addEventListener("change", update);
-    update(); // 页面加载时根据默认值初始化一次
+    update();
   }
 
-  // 首页表单
   setupNeedFields("needTypeInline", "sellFieldsInline", "buyFieldsInline");
-  // 弹窗表单
   setupNeedFields("needTypePopup", "sellFieldsPopup", "buyFieldsPopup");
 
-  // ==== 1. 每个栏目自动编号（#1, #2, #3...）====
+  // ===== 各栏目自动编号（#1, #2...）=====
   document.querySelectorAll("section.card").forEach(section => {
     const cards = section.querySelectorAll(".video-card");
     cards.forEach((card, idx) => {
       const noEl = card.querySelector(".item-no");
-      if (noEl) {
-        noEl.textContent = "#" + (idx + 1);
-      }
+      if (noEl) noEl.textContent = "#" + (idx + 1);
     });
   });
 
-  // ==== 2. 点击封面图片打开详情弹窗 ====
+  // ===== 详情弹窗：点击封面图片打开 =====
   const detailBackdrop = document.getElementById("detailBackdrop");
   const detailContent  = document.getElementById("detailContent");
   const detailCloseBtn = document.getElementById("detailCloseBtn");
@@ -1445,27 +1448,26 @@ function setLanguage(lang) {
     if (!detailBackdrop || !detailContent) return;
     const tpl = card.querySelector(".detail-template");
     if (!tpl) {
-      console.warn("该条目没有 detail-template，点击无效果");
+      console.warn("该条目没有 detail-template");
       return;
     }
-    // 将模板内容放入弹窗
     detailContent.innerHTML = tpl.innerHTML;
 
-    // 再次应用当前语言（因为新注入了 data-i18n 元素）
+    // 弹窗里的文字也按当前语言切一次
     const currentLang = localStorage.getItem("dz_lang") || "en";
     setLanguage(currentLang);
 
     detailBackdrop.style.display = "flex";
   }
 
-  // 事件委托：监听所有 .video-thumb-link 点击
+  // 点击封面触发
   document.addEventListener("click", (e) => {
     const link = e.target.closest(".video-thumb-link");
     if (!link) return;
     const card = link.closest(".video-card");
     if (!card) return;
 
-    e.preventDefault(); // 阻止 <a> 的默认跳转
+    e.preventDefault();
     openDetailFromCard(card);
   });
 
@@ -1487,10 +1489,10 @@ function setLanguage(lang) {
 
 
 
-
   
 </body>
 </html>
+
 
 
 
