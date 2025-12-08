@@ -1898,315 +1898,298 @@ Berczy经典学区双车独立屋
   </footer>
 
 
-<script>
-  // ===== 表单后端地址 =====
-  const FORM_ENDPOINT =
-    'https://script.google.com/macros/s/AKfycbzoBFE_akQuKOJgierTDfaQRFsyd_it0rKu80wfd0VEWUHmBj8PDbCIYegQGtB50outCQ/exec';
-
-  // ===== 年份 & 访问次数 =====
-  document.getElementById("year").textContent = new Date().getFullYear();
-
-  (function () {
-    const key = "dz_visit_count";
-    let count = parseInt(localStorage.getItem(key) || "0", 10);
-    count += 1;
-    localStorage.setItem(key, String(count));
-    const el = document.getElementById("visitCount");
-    if (el) el.textContent = count;
-  })();
-
-  // ===== 语言切换（修正版，不破坏详情里的 <p>）=====
-  const langButtons = document.querySelectorAll(".lang-btn");
-
-  function setLanguage(lang) {
-    // 顶部按钮状态
-    langButtons.forEach(btn => {
-      btn.classList.toggle("active", btn.dataset.lang === lang);
-    });
-
-    const elems = document.querySelectorAll("[data-i18n-en]");
-    elems.forEach(el => {
-      // ⭐ 详情正文如果以后加 data-i18n，也不要用 textContent 覆盖 HTML 段落
-      if (el.classList.contains("detail-body")) return;
-
-      const en = (el.getAttribute("data-i18n-en") || "").trim();
-      const zh = (el.getAttribute("data-i18n-zh") || "").trim();
-
-      const text = (lang === "zh" && zh) ? zh : en;
-      if (text) {
+  <script>
+    // ===== 表单后端地址 =====
+    const FORM_ENDPOINT =
+      'https://script.google.com/macros/s/AKfycbzoBFE_akQuKOJgierTDfaQRFsyd_it0rKu80wfd0VEWUHmBj8PDbCIYegQGtB50outCQ/exec';
+  
+    // ===== 年份 & 访问次数 =====
+    document.getElementById("year").textContent = new Date().getFullYear();
+  
+    (function () {
+      const key = "dz_visit_count";
+      let count = parseInt(localStorage.getItem(key) || "0", 10);
+      count += 1;
+      localStorage.setItem(key, String(count));
+      const el = document.getElementById("visitCount");
+      if (el) el.textContent = count;
+    })();
+  
+    // ================== 语言切换 ==================
+    const langButtons = document.querySelectorAll(".lang-btn");
+  
+    // 只更新主页面（不管详情弹窗），避免破坏 <p> 结构
+    function applyLangToPage(lang) {
+      const elems = document.querySelectorAll("[data-i18n-en]");
+      elems.forEach(el => {
+        // 跳过详情弹窗里的内容，那里单独处理
+        if (el.closest("#detailBackdrop")) return;
+  
+        const en = (el.getAttribute("data-i18n-en") || "").trim();
+        const zh = (el.getAttribute("data-i18n-zh") || "").trim();
+        const text = (lang === "zh" && zh) ? zh : en;
+        if (!text) return;
         el.textContent = text;
-      }
-    });
-
-    document.documentElement.lang = (lang === "zh" ? "zh-Hans" : "en");
-    localStorage.setItem("dz_lang", lang);
-  }
-
-  // 如果详情弹窗开着，也更新里面的内容
-const openDetail = document.querySelector("#detailBackdrop");
-if (openDetail && openDetail.style.display === "flex") {
-  const detailContent = openDetail.querySelector(".detail-content");
-  const elems = detailContent.querySelectorAll("[data-i18n-en]");
-  elems.forEach(el => {
-    const en = el.getAttribute("data-i18n-en");
-    const zh = el.getAttribute("data-i18n-zh");
-    if (el.classList.contains("detail-body")) {
-      el.innerHTML = (lang === "zh" && zh)
-        ? zh
-        : (en || "").replace(/\n/g, "<br>");
-    } else {
-      el.textContent = (lang === "zh" && zh)
-        ? zh.trim()
-        : (en || "").trim();
-    }
-  });
-}
-
-
-  // 绑定按钮点击
-  langButtons.forEach(btn => {
-    btn.addEventListener("click", () => setLanguage(btn.dataset.lang));
-  });
-
-  // 初始语言
-  const savedLang = localStorage.getItem("dz_lang") || "en";
-  setLanguage(savedLang);
-
-  // ===== 提交表单到后端 =====
-  async function submitFormToBackend(formId, successId, sourceTag) {
-    const form = document.getElementById(formId);
-    const success = document.getElementById(successId);
-    if (!form || !success) return;
-
-    const formData = new FormData(form);
-    formData.append('source', sourceTag);
-
-    try {
-      const res = await fetch(FORM_ENDPOINT, {
-        method: 'POST',
-        body: formData
-      });
-
-      if (!res.ok) throw new Error('Network response was not ok');
-      const data = await res.json();
-      console.log('Form submitted:', data);
-
-      success.style.display = 'block';
-      setTimeout(() => { success.style.display = 'none'; }, 4000);
-      form.reset();
-    } catch (err) {
-      console.error('Form submit error:', err);
-      alert('提交失败，请稍后再试 / Failed to submit, please try again later.');
-    }
-  }
-
-  // ===== 绑定两个表单按钮 =====
-  const inlineBtn = document.getElementById("inlineSubmitBtn");
-  if (inlineBtn) {
-    inlineBtn.addEventListener("click", () => {
-      submitFormToBackend("inlineContactForm", "inlineSuccess", "inline");
-    });
-  }
-
-  const popupBtn = document.getElementById("popupSubmitBtn");
-  if (popupBtn) {
-    popupBtn.addEventListener("click", () => {
-      submitFormToBackend("popupForm", "popupSuccess", "popup");
-      localStorage.setItem("dz_popup_seen", "1");
-    });
-  }
-
-  // ===== 停留 40 秒后弹出联系窗口（只出现一次）=====
-  (function () {
-    const key = "dz_popup_seen";
-    if (localStorage.getItem(key) === "1") return;
-
-    setTimeout(() => {
-      const backdrop = document.getElementById("popupBackdrop");
-      if (backdrop) backdrop.style.display = "flex";
-    }, 40000);
-
-    const closeBtn = document.getElementById("popupCloseBtn");
-    if (closeBtn) {
-      closeBtn.addEventListener("click", () => {
-        const backdrop = document.getElementById("popupBackdrop");
-        if (backdrop) backdrop.style.display = "none";
-        localStorage.setItem(key, "1");
       });
     }
-  })();
-
-  // ===== 买房 / 卖房 需求切换（首页 + 弹窗）=====
-  function setupNeedFields(needId, sellId, buyId) {
-    const select = document.getElementById(needId);
-    const sell   = document.getElementById(sellId);
-    const buy    = document.getElementById(buyId);
-
-    if (!select || !sell || !buy) return;
-
-    const update = () => {
-      if (select.value === "sell") {
-        sell.style.display = "block";
-        buy.style.display  = "none";
-      } else if (select.value === "buy") {
-        sell.style.display = "none";
-        buy.style.display  = "block";
-      } else {
-        sell.style.display = "none";
-        buy.style.display  = "none";
-      }
-    };
-
-    select.addEventListener("change", update);
-    update();
-  }
-
-  setupNeedFields("needTypeInline", "sellFieldsInline", "buyFieldsInline");
-  setupNeedFields("needTypePopup", "sellFieldsPopup", "buyFieldsPopup");
-
-  // ===== 各栏目自动编号（#1, #2...）=====
-  document.querySelectorAll("section.card").forEach(section => {
-    const cards = section.querySelectorAll(".video-card");
-    cards.forEach((card, idx) => {
-      const noEl = card.querySelector(".item-no");
-      if (noEl) noEl.textContent = "#" + (idx + 1);
-    });
-  });
-
-  // ===== 详情弹窗：点击封面图片打开 =====
-  const detailBackdrop = document.getElementById("detailBackdrop");
-  const detailContent  = document.getElementById("detailContent");
-  const detailCloseBtn = document.getElementById("detailCloseBtn");
-
-  function openDetailFromCard(card) {
-    if (!detailBackdrop || !detailContent) return;
-    const tpl = card.querySelector(".detail-template");
-    if (!tpl) {
-      console.warn("该条目没有 detail-template");
-      return;
-    }
   
-    // 填充详情内容
-    detailContent.innerHTML = tpl.innerHTML;
+    // 专门给详情弹窗内部用的多语言
+    function applyLangToDetail(root, lang) {
+      const elems = root.querySelectorAll("[data-i18n-en]");
+      elems.forEach(el => {
+        const en = el.getAttribute("data-i18n-en") || "";
+        const zh = el.getAttribute("data-i18n-zh") || "";
   
-    // 弹窗里的文字也按当前语言切一次
-    const currentLang = localStorage.getItem("dz_lang") || "en";
-    setLanguage(currentLang);
-  
-    // ====== 图片画廊页码逻辑 ======
-    const gallery = detailContent.querySelector(".detail-gallery-track");
-    if (gallery) {
-      const imgs = gallery.querySelectorAll("img");
-      if (imgs.length > 1) {
-        // 创建页码标签，例如 "1 / 5"
-        const indicator = document.createElement("div");
-        indicator.className = "detail-page-indicator";
-        indicator.textContent = `1 / ${imgs.length}`;
-  
-        // 放到 .detail-gallery 容器里
-        const galleryWrapper = gallery.closest(".detail-gallery");
-        if (galleryWrapper) {
-          galleryWrapper.appendChild(indicator);
+        if (el.classList.contains("detail-body")) {
+          // 正文用 innerHTML，保持段落结构
+          const html = (lang === "zh" && zh) ? zh : en;
+          if (html) el.innerHTML = html;
+        } else {
+          const text = (lang === "zh" && zh) ? zh : en;
+          if (text) el.textContent = text.trim();
         }
+      });
+    }
   
-        const updateIndicator = () => {
-          const galleryRect = gallery.getBoundingClientRect();
-          const centerX = galleryRect.left + gallery.clientWidth / 2;
+    function setLanguage(lang) {
+      // 顶部按钮高亮
+      langButtons.forEach(btn => {
+        btn.classList.toggle("active", btn.dataset.lang === lang);
+      });
   
-          let bestIndex = 0;
-          let bestDist = Infinity;
+      // 更新主页面文字
+      applyLangToPage(lang);
   
-          imgs.forEach((img, idx) => {
-            const r = img.getBoundingClientRect();
-            const imgCenterX = r.left + r.width / 2;
-            const dist = Math.abs(imgCenterX - centerX);
-            if (dist < bestDist) {
-              bestDist = dist;
-              bestIndex = idx;
-            }
-          });
+      // 如果详情弹窗正在打开，也更新里面
+      const backdrop = document.getElementById("detailBackdrop");
+      if (backdrop && backdrop.style.display === "flex") {
+        const detailRoot = document.getElementById("detailContent");
+        if (detailRoot) applyLangToDetail(detailRoot, lang);
+      }
   
-          indicator.textContent = `${bestIndex + 1} / ${imgs.length}`;
-        };
+      document.documentElement.lang = (lang === "zh" ? "zh-Hans" : "en");
+      localStorage.setItem("dz_lang", lang);
+    }
   
-        // 初始更新一次
-        updateIndicator();
+    // 绑定按钮点击
+    langButtons.forEach(btn => {
+      btn.addEventListener("click", () => {
+        setLanguage(btn.dataset.lang);
+      });
+    });
   
-        // 滑动时更新
-        gallery.addEventListener("scroll", () => {
-          window.requestAnimationFrame(updateIndicator);
+    // 初始语言
+    const savedLang = localStorage.getItem("dz_lang") || "en";
+    setLanguage(savedLang);
+  
+    // ================== 提交表单到后端 ==================
+    async function submitFormToBackend(formId, successId, sourceTag) {
+      const form = document.getElementById(formId);
+      const success = document.getElementById(successId);
+      if (!form || !success) return;
+  
+      const formData = new FormData(form);
+      formData.append('source', sourceTag);
+  
+      try {
+        const res = await fetch(FORM_ENDPOINT, {
+          method: 'POST',
+          body: formData
+        });
+  
+        if (!res.ok) throw new Error('Network response was not ok');
+        const data = await res.json();
+        console.log('Form submitted:', data);
+  
+        success.style.display = 'block';
+        setTimeout(() => { success.style.display = 'none'; }, 4000);
+        form.reset();
+      } catch (err) {
+        console.error('Form submit error:', err);
+        alert('提交失败，请稍后再试 / Failed to submit, please try again later.');
+      }
+    }
+  
+    // 绑定两个表单按钮
+    const inlineBtn = document.getElementById("inlineSubmitBtn");
+    if (inlineBtn) {
+      inlineBtn.addEventListener("click", () => {
+        submitFormToBackend("inlineContactForm", "inlineSuccess", "inline");
+      });
+    }
+  
+    const popupBtn = document.getElementById("popupSubmitBtn");
+    if (popupBtn) {
+      popupBtn.addEventListener("click", () => {
+        submitFormToBackend("popupForm", "popupSuccess", "popup");
+        localStorage.setItem("dz_popup_seen", "1");
+      });
+    }
+  
+    // ================== 停留 40 秒后弹出联系窗口（只出现一次） ==================
+    (function () {
+      const key = "dz_popup_seen";
+      if (localStorage.getItem(key) === "1") return;
+  
+      setTimeout(() => {
+        const backdrop = document.getElementById("popupBackdrop");
+        if (backdrop) backdrop.style.display = "flex";
+      }, 40000);
+  
+      const closeBtn = document.getElementById("popupCloseBtn");
+      if (closeBtn) {
+        closeBtn.addEventListener("click", () => {
+          const backdrop = document.getElementById("popupBackdrop");
+          if (backdrop) backdrop.style.display = "none";
+          localStorage.setItem(key, "1");
         });
       }
+    })();
+  
+    // ================== 买房 / 卖房 需求切换（首页 + 弹窗） ==================
+    function setupNeedFields(needId, sellId, buyId) {
+      const select = document.getElementById(needId);
+      const sell   = document.getElementById(sellId);
+      const buy    = document.getElementById(buyId);
+  
+      if (!select || !sell || !buy) return;
+  
+      const update = () => {
+        if (select.value === "sell") {
+          sell.style.display = "block";
+          buy.style.display  = "none";
+        } else if (select.value === "buy") {
+          sell.style.display = "none";
+          buy.style.display  = "block";
+        } else {
+          sell.style.display = "none";
+          buy.style.display  = "none";
+        }
+      };
+  
+      select.addEventListener("change", update);
+      update();
     }
   
-    // 显示弹窗
-    detailBackdrop.style.display = "flex";
-  }
+    setupNeedFields("needTypeInline", "sellFieldsInline", "buyFieldsInline");
+    setupNeedFields("needTypePopup", "sellFieldsPopup", "buyFieldsPopup");
   
-
-  // ⭐ 自动分段逻辑（如果正文里没有 <p>）
-  const body = detailContent.querySelector(".detail-body");
-  if (body && !body.innerHTML.includes("<p")) {
-    const raw = body.textContent.trim();
-    if (raw) {
-      const parts = raw
-        .split(/\r?\n\r?\n|[\r\n]+/)
-        .map(t => t.trim())
-        .filter(t => t.length > 0);
-      body.innerHTML = parts.map(t => `<p>${t}</p>`).join("");
-    }
-  }
-
-  // ⭐ 语言切换：根据当前语言渲染所有 data-i18n-en / zh
-  const currentLang = localStorage.getItem("dz_lang") || "en";
-  const elems = detailContent.querySelectorAll("[data-i18n-en]");
-  elems.forEach(el => {
-    const en = el.getAttribute("data-i18n-en");
-    const zh = el.getAttribute("data-i18n-zh");
-    if (el.classList.contains("detail-body")) {
-      // 正文用 innerHTML 显示段落结构
-      el.innerHTML = (currentLang === "zh" && zh)
-        ? zh
-        : (en || "").replace(/\n/g, "<br>");
-    } else {
-      // 普通文本用 textContent
-      el.textContent = (currentLang === "zh" && zh)
-        ? zh.trim()
-        : (en || "").trim();
-    }
-  });
-
-  detailBackdrop.style.display = "flex";
-}
-
-
-
-  // 点击封面触发
-  document.addEventListener("click", (e) => {
-    const link = e.target.closest(".video-thumb-link");
-    if (!link) return;
-    const card = link.closest(".video-card");
-    if (!card) return;
-
-    e.preventDefault();
-    openDetailFromCard(card);
-  });
-
-  // 关闭详情弹窗
-  if (detailCloseBtn && detailBackdrop) {
-    detailCloseBtn.addEventListener("click", () => {
-      detailBackdrop.style.display = "none";
-      detailContent.innerHTML = "";
+    // ================== 各栏目自动编号（#1, #2...） ==================
+    document.querySelectorAll("section.card").forEach(section => {
+      const cards = section.querySelectorAll(".video-card");
+      cards.forEach((card, idx) => {
+        const noEl = card.querySelector(".item-no");
+        if (noEl) noEl.textContent = "#" + (idx + 1);
+      });
     });
-
-    detailBackdrop.addEventListener("click", (e) => {
-      if (e.target === detailBackdrop) {
+  
+    // ================== 详情弹窗 ==================
+    const detailBackdrop = document.getElementById("detailBackdrop");
+    const detailContent  = document.getElementById("detailContent");
+    const detailCloseBtn = document.getElementById("detailCloseBtn");
+  
+    function openDetailFromCard(card) {
+      if (!detailBackdrop || !detailContent) return;
+      const tpl = card.querySelector(".detail-template");
+      if (!tpl) {
+        console.warn("该条目没有 detail-template");
+        return;
+      }
+  
+      // 填充详情内容
+      detailContent.innerHTML = tpl.innerHTML;
+  
+      // 根据当前语言处理多语言内容
+      const currentLang = localStorage.getItem("dz_lang") || "en";
+      applyLangToDetail(detailContent, currentLang);
+  
+      // 自动分段：如果正文没有 <p>，按换行拆成段落
+      detailContent.querySelectorAll(".detail-body").forEach(body => {
+        const html = body.innerHTML.trim();
+        if (!html) return;
+        if (html.includes("<p")) return; // 已经有 <p> 就不动
+  
+        const raw = body.textContent.trim();
+        if (!raw) return;
+        const parts = raw
+          .split(/\r?\n\r?\n|[\r\n]+/)
+          .map(t => t.trim())
+          .filter(t => t.length > 0);
+  
+        body.innerHTML = parts.map(t => `<p>${t}</p>`).join("");
+      });
+  
+      // ====== 图片画廊页码逻辑（滑动条 + 当前页码） ======
+      const gallery = detailContent.querySelector(".detail-gallery-track");
+      if (gallery) {
+        const imgs = gallery.querySelectorAll("img");
+        if (imgs.length > 1) {
+          const indicator = document.createElement("div");
+          indicator.className = "detail-page-indicator";
+          indicator.textContent = `1 / ${imgs.length}`;
+  
+          const galleryWrapper = gallery.closest(".detail-gallery");
+          if (galleryWrapper) {
+            galleryWrapper.appendChild(indicator);
+          }
+  
+          const updateIndicator = () => {
+            const galleryRect = gallery.getBoundingClientRect();
+            const centerX = galleryRect.left + gallery.clientWidth / 2;
+  
+            let bestIndex = 0;
+            let bestDist = Infinity;
+  
+            imgs.forEach((img, idx) => {
+              const r = img.getBoundingClientRect();
+              const imgCenterX = r.left + r.width / 2;
+              const dist = Math.abs(imgCenterX - centerX);
+              if (dist < bestDist) {
+                bestDist = dist;
+                bestIndex = idx;
+              }
+            });
+  
+            indicator.textContent = `${bestIndex + 1} / ${imgs.length}`;
+          };
+  
+          updateIndicator();
+          gallery.addEventListener("scroll", () => {
+            window.requestAnimationFrame(updateIndicator);
+          });
+        }
+      }
+  
+      detailBackdrop.style.display = "flex";
+    }
+  
+    // 点击封面图片打开详情
+    document.addEventListener("click", (e) => {
+      const link = e.target.closest(".video-thumb-link");
+      if (!link) return;
+      const card = link.closest(".video-card");
+      if (!card) return;
+  
+      e.preventDefault();
+      openDetailFromCard(card);
+    });
+  
+    // 关闭详情弹窗
+    if (detailCloseBtn && detailBackdrop) {
+      detailCloseBtn.addEventListener("click", () => {
         detailBackdrop.style.display = "none";
         detailContent.innerHTML = "";
-      }
-    });
-  }
-</script>
+      });
+  
+      detailBackdrop.addEventListener("click", (e) => {
+        if (e.target === detailBackdrop) {
+          detailBackdrop.style.display = "none";
+          detailContent.innerHTML = "";
+        }
+      });
+    }
+  </script>
+  
 
 
 
