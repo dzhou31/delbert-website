@@ -1480,6 +1480,27 @@ Berczy经典学区双车独立屋
     localStorage.setItem("dz_lang", lang);
   }
 
+  // 如果详情弹窗开着，也更新里面的内容
+const openDetail = document.querySelector("#detailBackdrop");
+if (openDetail && openDetail.style.display === "flex") {
+  const detailContent = openDetail.querySelector(".detail-content");
+  const elems = detailContent.querySelectorAll("[data-i18n-en]");
+  elems.forEach(el => {
+    const en = el.getAttribute("data-i18n-en");
+    const zh = el.getAttribute("data-i18n-zh");
+    if (el.classList.contains("detail-body")) {
+      el.innerHTML = (lang === "zh" && zh)
+        ? zh
+        : (en || "").replace(/\n/g, "<br>");
+    } else {
+      el.textContent = (lang === "zh" && zh)
+        ? zh.trim()
+        : (en || "").trim();
+    }
+  });
+}
+
+
   // 绑定按钮点击
   langButtons.forEach(btn => {
     btn.addEventListener("click", () => setLanguage(btn.dataset.lang));
@@ -1596,38 +1617,52 @@ Berczy经典学区双车独立屋
   const detailCloseBtn = document.getElementById("detailCloseBtn");
 
   function openDetailFromCard(card) {
-    if (!detailBackdrop || !detailContent) return;
+  if (!detailBackdrop || !detailContent) return;
 
-    const tpl = card.querySelector(".detail-template");
-    if (!tpl) {
-      console.warn("该条目没有 detail-template");
-      return;
-    }
-
-    // 把模板内容塞进弹窗
-    detailContent.innerHTML = tpl.innerHTML;
-
-    // ⭐ 自动分段逻辑：如果 detail-body 里面没有 <p>，就按换行自动拆成多段
-    const body = detailContent.querySelector(".detail-body");
-    if (body && !body.innerHTML.includes("<p")) {
-      const raw = body.textContent.trim();
-      if (raw) {
-        // 按空行或换行切分
-        const parts = raw
-          .split(/\r?\n\r?\n|[\r\n]+/)
-          .map(t => t.trim())
-          .filter(t => t.length > 0);
-
-        body.innerHTML = parts.map(t => `<p>${t}</p>`).join("");
-      }
-    }
-
-    // 弹窗里的文字也按当前语言切一次（不会改 detail-body，因为上面在 setLanguage 里已经跳过它）
-    const currentLang = localStorage.getItem("dz_lang") || "en";
-    setLanguage(currentLang);
-
-    detailBackdrop.style.display = "flex";
+  const tpl = card.querySelector(".detail-template");
+  if (!tpl) {
+    console.warn("该条目没有 detail-template");
+    return;
   }
+
+  // 将模板内容放入弹窗
+  detailContent.innerHTML = tpl.innerHTML;
+
+  // ⭐ 自动分段逻辑（如果正文里没有 <p>）
+  const body = detailContent.querySelector(".detail-body");
+  if (body && !body.innerHTML.includes("<p")) {
+    const raw = body.textContent.trim();
+    if (raw) {
+      const parts = raw
+        .split(/\r?\n\r?\n|[\r\n]+/)
+        .map(t => t.trim())
+        .filter(t => t.length > 0);
+      body.innerHTML = parts.map(t => `<p>${t}</p>`).join("");
+    }
+  }
+
+  // ⭐ 语言切换：根据当前语言渲染所有 data-i18n-en / zh
+  const currentLang = localStorage.getItem("dz_lang") || "en";
+  const elems = detailContent.querySelectorAll("[data-i18n-en]");
+  elems.forEach(el => {
+    const en = el.getAttribute("data-i18n-en");
+    const zh = el.getAttribute("data-i18n-zh");
+    if (el.classList.contains("detail-body")) {
+      // 正文用 innerHTML 显示段落结构
+      el.innerHTML = (currentLang === "zh" && zh)
+        ? zh
+        : (en || "").replace(/\n/g, "<br>");
+    } else {
+      // 普通文本用 textContent
+      el.textContent = (currentLang === "zh" && zh)
+        ? zh.trim()
+        : (en || "").trim();
+    }
+  });
+
+  detailBackdrop.style.display = "flex";
+}
+
 
 
   // 点击封面触发
@@ -1662,6 +1697,7 @@ Berczy经典学区双车独立屋
   
 </body>
 </html>
+
 
 
 
