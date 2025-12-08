@@ -503,12 +503,51 @@ select[name="needType"]:focus {
   scroll-snap-type: x mandatory;
   padding-bottom: 4px;
 }
+
+/* --- 详情页图片（自动适应电脑与手机） --- */
 .detail-gallery-track img {
-  height: 220px;
+  width: 100%;
+  max-width: 480px;         /* 控制单张图片最大宽度 */
+  height: auto;             /* 自动保持比例 */
   border-radius: 10px;
   object-fit: cover;
   scroll-snap-align: center;
+  flex-shrink: 0;
+  transition: transform 0.2s ease-in-out;
 }
+
+/* 让图片居中对齐 */
+.detail-gallery-track {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: center;
+  gap: 10px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding: 8px 0;
+}
+
+/* 桌面设备：图片更大一些 */
+@media (min-width: 900px) {
+  .detail-gallery-track img {
+    max-width: 560px;
+  }
+}
+
+/* 手机设备：缩小图片以适配屏幕 */
+@media (max-width: 600px) {
+  .detail-gallery-track img {
+    max-width: 95vw;     /* 占据屏幕宽度 */
+    height: auto;
+  }
+}
+
+/* 增加轻微放大交互效果 */
+.detail-gallery-track img:hover {
+  transform: scale(1.02);
+}
+
+
 
 /* 全图片排列 */
 .detail-grid {
