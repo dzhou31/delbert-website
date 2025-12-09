@@ -311,7 +311,7 @@
 
 
     /* --- Video cover grid --- */
-.video-grid {
+.section-items {
   display: grid;
   gap: 12px;
   margin-top: 10px;
@@ -319,13 +319,13 @@
 
 /* 桌面：3~4列，手机：2列 */
 @media (min-width: 1000px) {
-  .video-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .section-items { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 }
 @media (min-width: 640px) and (max-width: 999px) {
-  .video-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .section-items { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
 @media (max-width: 639px) {
-  .video-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .section-items { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
 .video-card {
@@ -616,7 +616,37 @@ select[name="needType"]:focus {
   margin-bottom: 0;
 }
   
-    
+/* 默认先认为所有栏目是折叠状态 */
+.card {
+  margin-bottom: 2rem;
+}
+
+/* 折叠时：只隐藏打上 hidden-when-collapsed 的项目 */
+.card.collapsed .hidden-when-collapsed {
+  display: none;
+}
+
+/* 展开时：全部项目显示 */
+.card.expanded .hidden-when-collapsed {
+  display: block;   /* 如果项目是 flex 就改成 flex */
+}
+
+/* 提示文字 */
+.section-expand-hint {
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+  text-decoration: underline;
+  user-select: none;
+}
+
+/* 让标题看起来是可点击的 */
+.section-title.section-toggle {
+  cursor: pointer;
+}
+
+
+
   </style>
   
 </head>
@@ -824,7 +854,7 @@ select[name="needType"]:focus {
     Browse property tour videos. Tap the cover image to watch.
   </p>
 
-  <div class="video-grid">
+  <div class="section-items">
     <!-- 视频 1 -->
 <article class="video-card">
   <a href="#" class="video-thumb-link">
@@ -1086,6 +1116,9 @@ Berczy经典学区双车独立屋
 
 
   </div>
+
+  <div class="section-expand-hint" data-target="videos"></div>
+
 </section>
 
     
@@ -1104,7 +1137,7 @@ Berczy经典学区双车独立屋
     Selected properties listed by Delbert Zhou. Tap the cover to view details.
   </p>
 
-  <div class="video-grid">
+  <div class="section-items">
     <!-- 房源 1 -->
 
     <article class="video-card">
@@ -1451,6 +1484,8 @@ Berczy经典学区双车独立屋
     </article>
     
   </div>
+  <div class="section-expand-hint" data-target="listings"></div>
+
 </section>
 
 
@@ -1467,8 +1502,8 @@ Berczy经典学区双车独立屋
     Real cases of buyers Delbert has helped in the GTA.
   </p>
 
-  <div class="video-grid">
-    <!-- 案例 1 -->
+  <div class="section-items">
+    <!-- 买房 1 -->
 
 
     <article class="video-card">
@@ -1547,7 +1582,7 @@ Berczy经典学区双车独立屋
     </article>
     
 
-    <!-- 案例 2：可以链接到你写的详细文章，也可以不加链接 -->
+    <!-- 买房 2 -->
 
     <article class="video-card">
       <a href="#" class="video-thumb-link">
@@ -1616,7 +1651,7 @@ Berczy经典学区双车独立屋
       </div>
     </article>
 
-    <!-- 案例 3：可以链接到你写的详细文章，也可以不加链接 -->
+    <!-- 买房 3 -->
 
     <article class="video-card">
       <a href="#" class="video-thumb-link">
@@ -1693,6 +1728,8 @@ Berczy经典学区双车独立屋
 
     
   </div>
+  <div class="section-expand-hint" data-target="cases"></div>
+
 </section>
 
 
@@ -1709,7 +1746,7 @@ Berczy经典学区双车独立屋
     Practical knowledge for buying, selling, and investing in the GTA.
   </p>
 
-  <div class="video-grid">
+  <div class="section-items">
     <!-- 知识文章 1 -->
  
     <article class="video-card">
@@ -1979,7 +2016,9 @@ Berczy经典学区双车独立屋
 </article>
 
   </div>
+  <div class="section-expand-hint" data-target="knowledge"></div>
 </section>
+
 
 <section class="card" id="news">
   <div class="section-title">
@@ -1992,7 +2031,7 @@ Berczy经典学区双车独立屋
     Latest market updates, policy changes, and news that may affect buyers and investors in the GTA.
   </p>
 
-  <div class="video-grid">
+  <div class="section-items">
     <!-- 资讯 1 -->
     <article class="video-card">
       <a class="video-thumb-link"
@@ -2039,6 +2078,8 @@ Berczy经典学区双车独立屋
 
     <!-- 后面要增加资讯就复制这个 article.video-card 往下加 -->
   </div>
+  <div class="section-expand-hint" data-target="news"></div>
+
 </section>
 
       
@@ -2431,6 +2472,105 @@ Berczy经典学区双车独立屋
         }
       });
     }
+
+// 默认：20251209
+    document.addEventListener('DOMContentLoaded', () => {
+      initCollapsibleSections();
+    });
+    
+    function getCurrentLanguage() {
+      const body = document.body;
+      const lang = body.getAttribute('data-lang') || document.documentElement.lang || 'zh';
+      return lang.startsWith('zh') ? 'zh' : 'en';
+    }
+    
+    const LANG_TEXT = {
+      zh: {
+        expand: '点击展开',
+        collapse: '点击收起',
+      },
+      en: {
+        expand: 'Click to expand',
+        collapse: 'Click to collapse',
+      },
+    };
+    
+    function initCollapsibleSections() {
+      const sections = document.querySelectorAll('.card');
+    
+      sections.forEach(section => {
+        // 默认：折叠状态
+        section.classList.add('collapsed');
+    
+        const items = section.querySelectorAll('.section-items > *');
+        items.forEach((item, index) => {
+          if (index >= 4) {
+            // 超出 4 个的项目打一个标记类，交给 CSS 控制显示/隐藏
+            item.classList.add('hidden-when-collapsed');
+          }
+        });
+    
+        // 初始化提示文字
+        updateSectionHintText(section);
+      });
+    
+      // 标题点击：展开/收起
+      const titleToggles = document.querySelectorAll('.section-toggle[data-target]');
+      titleToggles.forEach(el => {
+        el.addEventListener('click', event => {
+          const id = el.dataset.target;
+          toggleSection(id);
+        });
+      });
+    
+      // 顶部菜单点击：展开/收起对应栏目
+      const menuLinks = document.querySelectorAll('.menu-link[data-target]');
+      menuLinks.forEach(link => {
+        link.addEventListener('click', event => {
+          // 如果你不想滚动，就去掉这一行的注释
+          // event.preventDefault();
+    
+          const id = link.dataset.target;
+          toggleSection(id);
+        });
+      });
+    
+      // 提示文字本身也可以点
+      const hintEls = document.querySelectorAll('.section-expand-hint[data-target]');
+      hintEls.forEach(hint => {
+        hint.addEventListener('click', () => {
+          const id = hint.dataset.target;
+          toggleSection(id);
+        });
+      });
+    }
+    
+    function toggleSection(sectionId) {
+      const section = document.querySelector(
+        `.card[data-section-id="${sectionId}"]`
+      );
+      if (!section) return;
+    
+      section.classList.toggle('expanded');
+      section.classList.toggle('collapsed');
+    
+      updateSectionHintText(section);
+    }
+    
+    function updateSectionHintText(section) {
+      const lang = getCurrentLanguage();
+      const texts = LANG_TEXT[lang] || LANG_TEXT.zh;
+    
+      const hint = section.querySelector('.section-expand-hint');
+      if (!hint) return;
+    
+      if (section.classList.contains('expanded')) {
+        hint.textContent = texts.collapse;
+      } else {
+        hint.textContent = texts.expand;
+      }
+    }
+    
   </script>
   
 
