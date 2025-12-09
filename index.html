@@ -2483,92 +2483,59 @@ Berczy经典学区双车独立屋
     }
 
 // ===== 栏目展开/收起逻辑 =====
-document.querySelectorAll("section.card").forEach(section => {
-  const grid = section.querySelector(".video-grid");
+
+document.addEventListener("DOMContentLoaded", function () {
+  const grid = document.querySelector("#listings .video-grid");
   if (!grid) return;
 
-  const items = grid.querySelectorAll(".video-card");
-  if (items.length > 4) {
-    section.classList.add("collapsed");
+  const cards = Array.from(grid.querySelectorAll(".video-card"));
+  const limit = 4;
 
-    // 创建一个“展开更多”按钮
-    const toggleBtn = document.createElement("div");
-    toggleBtn.className = "expand-toggle";
-    toggleBtn.textContent = "▼ 展开更多";
-    section.appendChild(toggleBtn);
+  // 少于等于 4 个就不用折叠，直接返回
+  if (cards.length <= limit) return;
 
-    // 点击标题或按钮时展开/收起
-    const title = section.querySelector(".section-title");
-    function toggleSection() {
-      const isExpanded = section.classList.toggle("expanded");
-      section.classList.toggle("collapsed", !isExpanded);
-      toggleBtn.textContent = isExpanded ? "▲ 收起" : "▼ 展开更多";
+  // 先隐藏第 5 个以后
+  const extraCards = cards.slice(limit);
+  extraCards.forEach(card => {
+    card.style.display = "none";
+  });
+
+  // 创建按钮
+  const btn = document.createElement("button");
+  btn.type = "button";
+  btn.className = "video-toggle";
+  btn.textContent = `查看更多 ${cards.length - limit} 个视频`;
+
+  let expanded = false;
+
+  btn.addEventListener("click", function () {
+    expanded = !expanded;
+
+    if (expanded) {
+      // 展开：显示所有
+      extraCards.forEach(card => {
+        card.style.display = "";
+      });
+      btn.textContent = "收起视频";
+    } else {
+      // 收起：只留前 4 个
+      extraCards.forEach(card => {
+        card.style.display = "none";
+      });
+      btn.textContent = `查看更多 ${cards.length - limit} 个视频`;
     }
+  });
 
-    if (title) {
-      title.style.cursor = "pointer";
-      title.addEventListener("click", toggleSection);
-    }
-    toggleBtn.addEventListener("click", toggleSection);
-  }
+  // 把按钮插在视频 grid 后面
+  grid.insertAdjacentElement("afterend", btn);
 });
 
 
 
 
-
-
   </script>
   
 
-
-  <script>
-    document.addEventListener("DOMContentLoaded", function () {
-      const grid = document.querySelector("#listings .video-grid");
-      if (!grid) return;
-  
-      const cards = Array.from(grid.querySelectorAll(".video-card"));
-      const limit = 4;
-  
-      // 少于等于 4 个就不用折叠，直接返回
-      if (cards.length <= limit) return;
-  
-      // 先隐藏第 5 个以后
-      const extraCards = cards.slice(limit);
-      extraCards.forEach(card => {
-        card.style.display = "none";
-      });
-  
-      // 创建按钮
-      const btn = document.createElement("button");
-      btn.type = "button";
-      btn.className = "video-toggle";
-      btn.textContent = `查看更多 ${cards.length - limit} 个视频`;
-  
-      let expanded = false;
-  
-      btn.addEventListener("click", function () {
-        expanded = !expanded;
-  
-        if (expanded) {
-          // 展开：显示所有
-          extraCards.forEach(card => {
-            card.style.display = "";
-          });
-          btn.textContent = "收起视频";
-        } else {
-          // 收起：只留前 4 个
-          extraCards.forEach(card => {
-            card.style.display = "none";
-          });
-          btn.textContent = `查看更多 ${cards.length - limit} 个视频`;
-        }
-      });
-  
-      // 把按钮插在视频 grid 后面
-      grid.insertAdjacentElement("afterend", btn);
-    });
-  </script>
   
   
 </body>
