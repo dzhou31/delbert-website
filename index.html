@@ -1654,102 +1654,109 @@ select[name="needType"]:focus {
     }
 
 // 默认：20251209
-    document.addEventListener('DOMContentLoaded', () => {
-      initCollapsibleSections();
-    });
-    
-    function getCurrentLanguage() {
-      const body = document.body;
-      const lang = body.getAttribute('data-lang') || document.documentElement.lang || 'zh';
-      return lang.startsWith('zh') ? 'zh' : 'en';
-    }
-    
-    const LANG_TEXT = {
-      zh: {
-        expand: '点击展开',
-        collapse: '点击收起',
-      },
-      en: {
-        expand: 'Click to expand',
-        collapse: 'Click to collapse',
-      },
-    };
-    
-    function initCollapsibleSections() {
-      const sections = document.querySelectorAll('.content-section');
-    
-      sections.forEach(section => {
-        // 默认：折叠状态
-        section.classList.add('collapsed');
-    
-        const items = section.querySelectorAll('.section-items > *');
-        items.forEach((item, index) => {
-          if (index >= 4) {
-            // 超出 4 个的项目打一个标记类，交给 CSS 控制显示/隐藏
-            item.classList.add('hidden-when-collapsed');
-          }
-        });
-    
-        // 初始化提示文字
-        updateSectionHintText(section);
-      });
-    
-      // 标题点击：展开/收起
-      const titleToggles = document.querySelectorAll('.section-toggle[data-target]');
-      titleToggles.forEach(el => {
-        el.addEventListener('click', event => {
-          const id = el.dataset.target;
-          toggleSection(id);
-        });
-      });
-    
-      // 顶部菜单点击：展开/收起对应栏目
-      const menuLinks = document.querySelectorAll('.menu-link[data-target]');
-      menuLinks.forEach(link => {
-        link.addEventListener('click', event => {
-          // 如果你不想滚动，就去掉这一行的注释
-          // event.preventDefault();
-    
-          const id = link.dataset.target;
-          toggleSection(id);
-        });
-      });
-    
-      // 提示文字本身也可以点
-      const hintEls = document.querySelectorAll('.section-expand-hint[data-target]');
-      hintEls.forEach(hint => {
-        hint.addEventListener('click', () => {
-          const id = hint.dataset.target;
-          toggleSection(id);
-        });
-      });
-    }
-    
-    function toggleSection(sectionId) {
-      const section = document.querySelector(
-        `.card[data-section-id="${sectionId}"]`
-      );
-      if (!section) return;
-    
-      section.classList.toggle('expanded');
-      section.classList.toggle('collapsed');
-    
-      updateSectionHintText(section);
-    }
-    
-    function updateSectionHintText(section) {
-      const lang = getCurrentLanguage();
-      const texts = LANG_TEXT[lang] || LANG_TEXT.zh;
-    
-      const hint = section.querySelector('.section-expand-hint');
-      if (!hint) return;
-    
-      if (section.classList.contains('expanded')) {
-        hint.textContent = texts.collapse;
-      } else {
-        hint.textContent = texts.expand;
+document.addEventListener('DOMContentLoaded', () => {
+  initCollapsibleSections();
+});
+
+function getCurrentLanguage() {
+  // 优先用你前面存的 dz_lang
+  const saved = localStorage.getItem('dz_lang');
+  if (saved === 'zh' || saved === 'en') return saved;
+
+  const htmlLang = document.documentElement.lang || '';
+  return htmlLang.startsWith('zh') ? 'zh' : 'en';
+}
+
+const LANG_TEXT = {
+  zh: {
+    expand: '点击展开',
+    collapse: '点击收起',
+  },
+  en: {
+    expand: 'Click to expand',
+    collapse: 'Click to collapse',
+  },
+};
+
+function initCollapsibleSections() {
+  const sections = document.querySelectorAll('.content-section');
+
+  sections.forEach(section => {
+    // 默认折叠
+    section.classList.add('collapsed');
+
+    const items = section.querySelectorAll('.section-items > *');
+    items.forEach((item, index) => {
+      if (index >= 4) {
+        item.classList.add('hidden-when-collapsed');
       }
-    }
+    });
+
+    updateSectionHintText(section);
+  });
+
+  // 标题点击：找最近的 content-section
+  const titleToggles = document.querySelectorAll('.content-section .section-title');
+  titleToggles.forEach(el => {
+    el.style.cursor = 'pointer';
+    el.addEventListener('click', () => {
+      const section = el.closest('.content-section');
+      if (!section || !section.id) return;
+      toggleSection(section.id);
+    });
+  });
+
+  // 顶部菜单：从 href 里取 #id
+  const menuLinks = document.querySelectorAll('.menu-link[href^="#"]');
+  menuLinks.forEach(link => {
+    const hash = link.getAttribute('href');
+    const id = hash && hash.startsWith('#') ? hash.slice(1) : null;
+    if (!id) return;
+
+    link.addEventListener('click', () => {
+      const sec = document.querySelector(`.content-section#${id}`);
+      if (sec) {
+        toggleSection(id);
+      }
+      // 不阻止默认行为，让页面正常滚动到对应位置
+    });
+  });
+
+  // 提示文字点击
+  const hintEls = document.querySelectorAll('.section-expand-hint[data-target]');
+  hintEls.forEach(hint => {
+    hint.addEventListener('click', () => {
+      const id = hint.dataset.target;
+      if (id) toggleSection(id);
+    });
+  });
+}
+
+function toggleSection(sectionId) {
+  // 注意这里改成 .content-section#id
+  const section = document.querySelector(`.content-section#${sectionId}`);
+  if (!section) return;
+
+  section.classList.toggle('expanded');
+  section.classList.toggle('collapsed');
+
+  updateSectionHintText(section);
+}
+
+function updateSectionHintText(section) {
+  const lang = getCurrentLanguage();
+  const texts = LANG_TEXT[lang] || LANG_TEXT.zh;
+
+  const hint = section.querySelector('.section-expand-hint');
+  if (!hint) return;
+
+  if (section.classList.contains('expanded')) {
+    hint.textContent = texts.collapse;
+  } else {
+    hint.textContent = texts.expand;
+  }
+}
+
     
   </script>
   
