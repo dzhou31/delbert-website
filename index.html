@@ -616,56 +616,7 @@ select[name="needType"]:focus {
   margin-bottom: 0;
 }
   
-/* --- 栏目展开/收起样式 --- */
-
-.card {
-  border: 1px solid #ddd;
-  border-radius: 10px;
-  padding: 12px;
-  margin-bottom: 16px;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-}
-
-.section-title {
-  font-weight: 600;
-  margin-bottom: 10px;
-  font-size: 16px;
-}
-
-.video-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-  gap: 10px;
-}
-
-/* 视频卡片自己可以再美化 */
-.video-card {
-  border-radius: 8px;
-  padding: 8px;
-  background: #f8f9fa;
-}
-
-/* 展开/收起按钮样式 */
-.video-toggle {
-  margin-top: 10px;
-  width: 100%;
-  padding: 6px 10px;
-  border-radius: 999px;
-  border: 1px solid #004c97;
-  background: #fff;
-  font-size: 13px;
-  color: #004c97;
-  cursor: pointer;
-}
-
-.video-toggle:hover {
-  background: #004c97;
-  color: #fff;
-}
-
-
-
-
+    
   </style>
   
 </head>
@@ -1143,7 +1094,6 @@ Berczy经典学区双车独立屋
       <!-- Listings -->
 
       <section class="card" id="listings">
-
   <div class="section-title">
     <span class="icon">🏡</span>
     <span data-i18n-en="Featured Listings" data-i18n-zh="最新卖房案例">Featured Listings</span>
@@ -1466,7 +1416,7 @@ Berczy经典学区双车独立屋
             <img src="Listing00501.jpg" alt="">
             <img src="Listing00502.jpg" alt="">
             <img src="Listing00503.jpg" alt="">
-           
+            <img src="Listing00504.jpg" alt="">
           </div>
         </div>
         <div class="detail-body"
@@ -2481,62 +2431,11 @@ Berczy经典学区双车独立屋
         }
       });
     }
-
-// ===== 栏目展开/收起逻辑 =====
-
-document.addEventListener("DOMContentLoaded", function () {
-  const grid = document.querySelector("#listings .video-grid");
-  if (!grid) return;
-
-  const cards = Array.from(grid.querySelectorAll(".video-card"));
-  const limit = 4;
-
-  // 少于等于 4 个就不用折叠，直接返回
-  if (cards.length <= limit) return;
-
-  // 先隐藏第 5 个以后
-  const extraCards = cards.slice(limit);
-  extraCards.forEach(card => {
-    card.style.display = "none";
-  });
-
-  // 创建按钮
-  const btn = document.createElement("button");
-  btn.type = "button";
-  btn.className = "video-toggle";
-  btn.textContent = `查看更多 ${cards.length - limit} 个视频`;
-
-  let expanded = false;
-
-  btn.addEventListener("click", function () {
-    expanded = !expanded;
-
-    if (expanded) {
-      // 展开：显示所有
-      extraCards.forEach(card => {
-        card.style.display = "";
-      });
-      btn.textContent = "收起视频";
-    } else {
-      // 收起：只留前 4 个
-      extraCards.forEach(card => {
-        card.style.display = "none";
-      });
-      btn.textContent = `查看更多 ${cards.length - limit} 个视频`;
-    }
-  });
-
-  // 把按钮插在视频 grid 后面
-  grid.insertAdjacentElement("afterend", btn);
-});
-
-
-
-
   </script>
   
 
-  
+
+
   
 </body>
 </html>
