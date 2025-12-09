@@ -616,11 +616,16 @@ select[name="needType"]:focus {
   margin-bottom: 0;
 }
   
-/* --- 栏目展开/收起逻辑 --- */
-.card.collapsed .video-grid {
-  max-height: 900px; /* 大约4个卡片高度 */
-  overflow-y: auto;
+/* --- 栏目展开/收起样式 --- */
+.card {
   position: relative;
+  transition: max-height 0.4s ease, padding-bottom 0.3s;
+  overflow: hidden;
+}
+
+.card.collapsed .video-grid {
+  max-height: 900px; /* 约4条内容 */
+  overflow-y: auto;
 }
 
 .card.expanded .video-grid {
@@ -628,8 +633,8 @@ select[name="needType"]:focus {
   overflow: visible;
 }
 
-.card.collapsed::after {
-  content: '▼ 展开更多';
+/* 展开/收起按钮 */
+.expand-toggle {
   display: block;
   text-align: center;
   color: #004c97;
@@ -637,22 +642,11 @@ select[name="needType"]:focus {
   font-weight: 600;
   cursor: pointer;
   padding: 6px;
-  transition: color 0.25s;
+  border-top: 1px solid rgba(0,0,0,0.05);
+  transition: color 0.2s;
 }
 
-.card.expanded::after {
-  content: '▲ 收起';
-  display: block;
-  text-align: center;
-  color: #004c97;
-  font-size: 0.85rem;
-  font-weight: 600;
-  cursor: pointer;
-  padding: 6px;
-}
-
-.card.collapsed::after:hover,
-.card.expanded::after:hover {
+.expand-toggle:hover {
   color: #013f7d;
 }
 
@@ -2474,7 +2468,7 @@ Berczy经典学区双车独立屋
       });
     }
 
-    // ===== 默认只显示4个项目（可展开/收起） =====
+// ===== 栏目展开/收起逻辑 =====
 document.querySelectorAll("section.card").forEach(section => {
   const grid = section.querySelector(".video-grid");
   if (!grid) return;
@@ -2483,27 +2477,27 @@ document.querySelectorAll("section.card").forEach(section => {
   if (items.length > 4) {
     section.classList.add("collapsed");
 
-    // 点击标题、菜单或下方箭头都可切换展开
+    // 创建一个“展开更多”按钮
+    const toggleBtn = document.createElement("div");
+    toggleBtn.className = "expand-toggle";
+    toggleBtn.textContent = "▼ 展开更多";
+    section.appendChild(toggleBtn);
+
+    // 点击标题或按钮时展开/收起
     const title = section.querySelector(".section-title");
-    if (title) {
-      title.style.cursor = "pointer";
-      title.addEventListener("click", () => {
-        section.classList.toggle("expanded");
-        section.classList.toggle("collapsed");
-      });
+    function toggleSection() {
+      const isExpanded = section.classList.toggle("expanded");
+      section.classList.toggle("collapsed", !isExpanded);
+      toggleBtn.textContent = isExpanded ? "▲ 收起" : "▼ 展开更多";
     }
 
-    // 支持点击整个卡片底部的展开提示（用伪元素 content）
-    section.addEventListener("click", (e) => {
-      const afterArea = section.getBoundingClientRect().bottom - 40;
-      if (e.clientY > afterArea) {
-        section.classList.toggle("expanded");
-        section.classList.toggle("collapsed");
-      }
-    });
+    if (title) {
+      title.style.cursor = "pointer";
+      title.addEventListener("click", toggleSection);
+    }
+    toggleBtn.addEventListener("click", toggleSection);
   }
 });
-
 
 
 
