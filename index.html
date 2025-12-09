@@ -617,17 +617,17 @@ select[name="needType"]:focus {
 }
   
 /* 默认先认为所有栏目是折叠状态 */
-.card {
+.content-section {
   margin-bottom: 2rem;
 }
 
 /* 折叠时：只隐藏打上 hidden-when-collapsed 的项目 */
-.card.collapsed .hidden-when-collapsed {
+.content-section.collapsed .hidden-when-collapsed {
   display: none;
 }
 
 /* 展开时：全部项目显示 */
-.card.expanded .hidden-when-collapsed {
+.content-section.expanded .hidden-when-collapsed {
   display: block;   /* 如果项目是 flex 就改成 flex */
 }
 
@@ -843,7 +843,7 @@ select[name="needType"]:focus {
 
     <!-- Content sections -->
 
-<section class="card" id="videos">
+<section class="content-section" id="videos">
   <div class="section-title">
     <span class="icon">🎥</span>
     <span data-i18n-en="Viewing Videos" data-i18n-zh="看房视频">Viewing Videos</span>
@@ -1126,7 +1126,7 @@ Berczy经典学区双车独立屋
 
       <!-- Listings -->
 
-      <section class="card" id="listings">
+      <section class="content-section" id="listings">
   <div class="section-title">
     <span class="icon">🏡</span>
     <span data-i18n-en="Featured Listings" data-i18n-zh="最新卖房案例">Featured Listings</span>
@@ -1491,7 +1491,7 @@ Berczy经典学区双车独立屋
 
       <!-- Buyer cases -->
 
-      <section class="card" id="cases">
+      <section class="content-section" id="cases">
   <div class="section-title">
     <span class="icon">🤝</span>
     <span data-i18n-en="Buyer Success Stories" data-i18n-zh="买房成功案例">Buyer Success Stories</span>
@@ -1735,7 +1735,7 @@ Berczy经典学区双车独立屋
 
       <!-- Knowledge & Guides -->
 
-<section class="card" id="knowledge">
+<section class="content-section" id="knowledge">
   <div class="section-title">
     <span class="icon">📘</span>
     <span data-i18n-en="Real Estate Guides" data-i18n-zh="房产知识与攻略">Real Estate Guides</span>
@@ -2020,7 +2020,7 @@ Berczy经典学区双车独立屋
 </section>
 
 
-<section class="card" id="news">
+<section class="content-section" id="news">
   <div class="section-title">
     <span class="icon">📰</span>
     <span data-i18n-en="Real Estate News" data-i18n-zh="房产资讯">Real Estate News</span>
@@ -2496,7 +2496,7 @@ Berczy经典学区双车独立屋
     };
     
     function initCollapsibleSections() {
-      const sections = document.querySelectorAll('.card');
+      const sections = document.querySelectorAll('.content-section');
     
       sections.forEach(section => {
         // 默认：折叠状态
