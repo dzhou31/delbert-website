@@ -3027,19 +3027,14 @@ const COUNTER_ENDPOINT =
 'https://script.google.com/macros/s/AKfycbz1XwzEJjk0XJvhT57ACHFHfxZPi_egHzI3v5jT12Oy7dGhZPe1aQZ_WlCYJ-REYDsx/exec';
 
 
-// ================== 全站访问计数（专业版，用后端统一统计） ==================
+// ================== 全站访问计数 ==================
 async function updateVisitCounter() {
   const el = document.getElementById("visitCount");
   if (!el) return;
 
   try {
-    const res = await fetch(COUNTER_ENDPOINT, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ action: 'visit' }) // 每次访问都 +1
-    });
+    // 简单 GET + 查询参数，不会触发预检 OPTIONS
+    const res = await fetch(COUNTER_ENDPOINT + '?action=visit');
 
     if (!res.ok) throw new Error('Network error');
 
