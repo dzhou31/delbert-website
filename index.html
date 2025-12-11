@@ -3009,48 +3009,43 @@ select[name="needType"]:focus {
 
   <script>
 
-  
 
 
-
-// ===== 年份 =====
+  // ===== 年份 =====
 document.getElementById("year").textContent = new Date().getFullYear();
 
-// ===== 表单后端地址 =====
+// ===== 表单后端地址（原来那条，保持不变） =====
 const FORM_ENDPOINT =
   'https://script.google.com/macros/s/AKfycbzoBFE_akQuKOJgierTDfaQRFsyd_it0rKu80wfd0VEWUHmBj8PDbCIYegQGtB50outCQ/exec';
 
 // ===== 全站访问计数后端地址（用最新的 Web App URL） =====
 const COUNTER_ENDPOINT =
-  'https://script.google.com/macros/s/AKfycby7VZrSXlK5tfIOKlfs2TvCUNSIrxEvTxP5bUV1WbRx-baJBckg5GI5SHF9leYRCXOL/exec';
+  'https://script.google.com/macros/s/AKfycbwdGyLkiOIPASRlkG0GHni-0dDW7tgXb3V1TY3gaCj1GJcs4VJ_8VuF4-fD3YGmJ0c/exec';
 
-// ================== 全站访问计数 ==================
-async function updateVisitCounter() {
-  const el = document.getElementById("visitCount");
+// ================== 全站访问计数（JSONP 版） ==================
+function handleVisitCount(data) {
+  // 这个函数会被 Apps Script 调用：handleVisitCount({ total: 123 })
+  const el = document.getElementById('visitCount');
   if (!el) return;
 
-  try {
-    const res = await fetch(COUNTER_ENDPOINT + '?action=visit', {
-      method: 'GET'
-      // 不要加 headers，不要加 mode: 'no-cors'
-    });
-
-    if (!res.ok) throw new Error('Network error');
-
-    const data = await res.json();
-    if (data && typeof data.total === 'number') {
-      el.textContent = data.total;
-    } else {
-      el.textContent = '?';
-    }
-  } catch (e) {
-    console.error('Visit counter error:', e);
+  if (data && typeof data.total === 'number') {
+    el.textContent = data.total;
+  } else {
     el.textContent = '?';
   }
 }
 
-// 页面加载完就调用一次
-updateVisitCounter();
+function loadVisitCounter() {
+  const script = document.createElement('script');
+  script.src = COUNTER_ENDPOINT + '?action=visit&callback=handleVisitCount';
+  script.defer = true;
+  document.body.appendChild(script);
+}
+
+// 页面加载后执行一次
+document.addEventListener('DOMContentLoaded', loadVisitCounter);
+
+
 
 
 
