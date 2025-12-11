@@ -762,10 +762,13 @@ select[name="needType"]:focus {
 </div>
 
         
-        <div class="counter">
-          <span data-i18n-en="Visits from this device:" data-i18n-zh="本设备访问次数：">Visits from this device:</span>
-          <span id="visitCount" class="value">1</span>
-        </div>
+<div class="counter">
+  <span data-i18n-en="Total site visits:" data-i18n-zh="全站累计访问次数：">Total site visits:</span>
+  <span id="visitCount" class="value">—</span>
+</div>
+
+
+
 
       </div>
 
@@ -854,9 +857,10 @@ select[name="needType"]:focus {
     Browse property tour videos. Tap the cover image to watch.
   </p>
 
+<!-- video case -->
   <div class="section-items">
 
-             <!-- video case -->
+             
     <!-- 视频 1 -->
     <article class="video-card">
       <a href="#" class="video-thumb-link">
@@ -1127,7 +1131,7 @@ select[name="needType"]:focus {
     
 
 
-      <!-- Listings -->
+<!-- Listings -->
 
       <section class="content-section" id="listings">
   <div class="section-title">
@@ -1694,8 +1698,7 @@ select[name="needType"]:focus {
 
 </section>
 
-
-      <!-- Buyer cases -->
+<!-- Buyer cases -->
 
       <section class="content-section" id="cases">
   <div class="section-title">
@@ -2297,8 +2300,7 @@ select[name="needType"]:focus {
 
 </section>
 
-
-      <!-- Knowledge & Guides -->
+<!-- Knowledge & Guides -->
 
 <section class="content-section" id="knowledge">
   <div class="section-title">
@@ -2666,7 +2668,7 @@ select[name="needType"]:focus {
   <div class="section-expand-hint" data-target="knowledge"></div>
 </section>
 
-
+<!-- news -->
 <section class="content-section" id="news">
   <div class="section-title">
     <span class="icon">📰</span>
@@ -3006,21 +3008,57 @@ select[name="needType"]:focus {
 
 
   <script>
-    // ===== 表单后端地址 =====
-    const FORM_ENDPOINT =
-      'https://script.google.com/macros/s/AKfycbzoBFE_akQuKOJgierTDfaQRFsyd_it0rKu80wfd0VEWUHmBj8PDbCIYegQGtB50outCQ/exec';
+
   
     // ===== 年份 & 访问次数 =====
-    document.getElementById("year").textContent = new Date().getFullYear();
   
-    (function () {
-      const key = "dz_visit_count";
-      let count = parseInt(localStorage.getItem(key) || "0", 10);
-      count += 1;
-      localStorage.setItem(key, String(count));
-      const el = document.getElementById("visitCount");
-      if (el) el.textContent = count;
-    })();
+       // ===== 年份 =====
+
+       document.getElementById("year").textContent = new Date().getFullYear();
+
+  
+
+       // ===== 表单后端地址 =====
+const FORM_ENDPOINT =
+'https://script.google.com/macros/s/AKfycbzoBFE_akQuKOJgierTDfaQRFsyd_it0rKu80wfd0VEWUHmBj8PDbCIYegQGtB50outCQ/exec';
+
+// ===== 全站访问计数后端地址（新建的 Apps Script Web App URL） =====
+const COUNTER_ENDPOINT =
+'https://script.google.com/macros/s/AKfycbzDW9xD4SR2m4YZWYM0xKH1lgQlHYVLnaPIu3EMdNtVONYgJai9tmMZkff7qixeVN8/exec';
+
+
+// ================== 全站访问计数（专业版，用后端统一统计） ==================
+async function updateVisitCounter() {
+  const el = document.getElementById("visitCount");
+  if (!el) return;
+
+  try {
+    const res = await fetch(COUNTER_ENDPOINT, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ action: 'visit' }) // 每次访问都 +1
+    });
+
+    if (!res.ok) throw new Error('Network error');
+
+    const data = await res.json();
+    if (data && typeof data.total === 'number') {
+      el.textContent = data.total;
+    } else {
+      el.textContent = '?';
+    }
+  } catch (e) {
+    console.error('Visit counter error:', e);
+    el.textContent = '?';
+  }
+}
+
+// 页面加载完就调用一次
+updateVisitCounter();
+
+
   
     // ================== 语言切换 ==================
     const langButtons = document.querySelectorAll(".lang-btn");
