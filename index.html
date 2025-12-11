@@ -3010,22 +3010,19 @@ select[name="needType"]:focus {
   <script>
 
   
-    // ===== 年份 & 访问次数 =====
-  
-       // ===== 年份 =====
 
-       document.getElementById("year").textContent = new Date().getFullYear();
 
-  
 
-       // ===== 表单后端地址 =====
+// ===== 年份 =====
+document.getElementById("year").textContent = new Date().getFullYear();
+
+// ===== 表单后端地址 =====
 const FORM_ENDPOINT =
-'https://script.google.com/macros/s/AKfycbzoBFE_akQuKOJgierTDfaQRFsyd_it0rKu80wfd0VEWUHmBj8PDbCIYegQGtB50outCQ/exec';
+  'https://script.google.com/macros/s/AKfycbzoBFE_akQuKOJgierTDfaQRFsyd_it0rKu80wfd0VEWUHmBj8PDbCIYegQGtB50outCQ/exec';
 
-// ===== 全站访问计数后端地址（新建的 Apps Script Web App URL） =====
+// ===== 全站访问计数后端地址（用最新的 Web App URL） =====
 const COUNTER_ENDPOINT =
-'https://script.google.com/macros/s/AKfycbz1XwzEJjk0XJvhT57ACHFHfxZPi_egHzI3v5jT12Oy7dGhZPe1aQZ_WlCYJ-REYDsx/exec';
-
+  'https://script.google.com/macros/s/AKfycby7VZrSXlK5tfIOKlfs2TvCUNSIrxEvTxP5bUV1WbRx-baJBckg5GI5SHF9leYRCXOL/exec';
 
 // ================== 全站访问计数 ==================
 async function updateVisitCounter() {
@@ -3033,8 +3030,10 @@ async function updateVisitCounter() {
   if (!el) return;
 
   try {
-    // 简单 GET + 查询参数，不会触发预检 OPTIONS
-    const res = await fetch(COUNTER_ENDPOINT + '?action=visit');
+    const res = await fetch(COUNTER_ENDPOINT + '?action=visit', {
+      method: 'GET'
+      // 不要加 headers，不要加 mode: 'no-cors'
+    });
 
     if (!res.ok) throw new Error('Network error');
 
@@ -3052,6 +3051,7 @@ async function updateVisitCounter() {
 
 // 页面加载完就调用一次
 updateVisitCounter();
+
 
 
   
