@@ -459,6 +459,38 @@ select[name="needType"]:focus {
   box-shadow: 0 5px 14px rgba(0, 76, 151, 0.25);
 }
 
+/* ===== 提交按钮（扩大一倍）20251211 ===== */
+#inlineSubmitBtn,
+#popupSubmitBtn {
+  width: 200px;            /* 原本大约 100px，现在扩大一倍 */
+  height: 44px;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 10px;
+  background-color: #004c97;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+#inlineSubmitBtn:hover,
+#popupSubmitBtn:hover {
+  background-color: #013f7d;
+  transform: scale(1.03);
+}
+
+/* 手机端适配：稍微收窄 */
+@media (max-width: 600px) {
+  #inlineSubmitBtn,
+  #popupSubmitBtn {
+    width: 160px;
+    height: 40px;
+    font-size: 0.9rem;
+  }
+}
+
+
 /* 每条内容的编号行 */
 .item-meta {
   font-size: 0.78rem;
