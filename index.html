@@ -202,6 +202,46 @@
     .btn-secondary{background:#edf0f7;color:var(--text);}
     .success-msg{font-size:.8rem;color:green;margin-top:4px;display:none;}
 
+    /* ===== 表单同意文字 ===== */
+.consent-text {
+  font-size: 0.82rem;
+  color: #444;
+  line-height: 1.5;
+  margin-top: 8px;
+  margin-bottom: 14px;
+  text-align: left;
+}
+.consent-text a.privacy-link {
+  color: #004c97;
+  font-weight: 500;
+  text-decoration: underline;
+  cursor: pointer;
+}
+.consent-text a.privacy-link:hover {
+  color: #013f7d;
+}
+
+/* ===== 隐私政策弹窗 ===== */
+.privacy-modal {
+  max-width: 640px;
+}
+.privacy-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+.privacy-content {
+  font-size: 0.86rem;
+  color: #333;
+  line-height: 1.7;
+  margin-top: 4px;
+  white-space: pre-line; /* 支持换行 */
+}
+
+    
+    
+    
+    
     /* Content sections */
     .sections-grid{
       display:grid;
@@ -837,6 +877,17 @@ select[name="needType"]:focus {
     <label data-i18n-en="Requirements" data-i18n-zh="其他要求">Requirements</label>
     <textarea name="requirements" rows="2"></textarea>
   </div>
+
+  <div class="consent-text">
+    <span
+      data-i18n-en="I agree to be contacted by STAR RESIDENCE REAL ESTATE via call, email, and text for real estate services. To opt-out, you can reply 'stop' at any time or reply 'help' for assistance. You can also click the unsubscribe link in the emails. Message and data rates may apply. Message frequency may vary."
+      data-i18n-zh="我同意由 STAR RESIDENCE REAL ESTATE 通过电话、电子邮件和短信与我联系，以提供房产服务。如需退订，可回复 “stop” 取消或回复 “help” 获取帮助，也可以点击邮件中的退订链接。短信与数据费用可能适用，发送频率可能不同。">
+    </span>
+    <a href="#" class="privacy-link"
+       data-i18n-en="[Privacy Policy]"
+       data-i18n-zh="【隐私政策】">[Privacy Policy]</a>
+  </div>
+
 
   <button type="button" id="inlineSubmitBtn"
           data-i18n-en="Submit" data-i18n-zh="提交">Submit</button>
@@ -3228,6 +3279,17 @@ When listings move fast:&lt;/p&gt;
     <textarea name="requirements" rows="2"></textarea>
   </div>
 
+  <div class="consent-text">
+    <span
+      data-i18n-en="I agree to be contacted by STAR RESIDENCE REAL ESTATE via call, email, and text for real estate services. To opt-out, you can reply 'stop' at any time or reply 'help' for assistance. You can also click the unsubscribe link in the emails. Message and data rates may apply. Message frequency may vary."
+      data-i18n-zh="我同意由 STAR RESIDENCE REAL ESTATE 通过电话、电子邮件和短信与我联系，以提供房产服务。如需退订，可回复 “stop” 取消或回复 “help” 获取帮助，也可以点击邮件中的退订链接。短信与数据费用可能适用，发送频率可能不同。">
+    </span>
+    <a href="#" class="privacy-link"
+       data-i18n-en="[Privacy Policy]"
+       data-i18n-zh="【隐私政策】">[Privacy Policy]</a>
+  </div>
+
+
   <button type="button" id="popupSubmitBtn"
           data-i18n-en="Submit" data-i18n-zh="提交">Submit</button>
 
@@ -3251,6 +3313,38 @@ When listings move fast:&lt;/p&gt;
   </div>
 
   </div>
+
+
+<!-- 隐私政策弹窗 -->
+<div class="popup-backdrop" id="privacyBackdrop" style="display:none;">
+  <div class="popup privacy-modal">
+    <button class="detail-close" id="privacyCloseBtn">&times;</button>
+    <div class="privacy-title"
+         data-i18n-en="Privacy Policy"
+         data-i18n-zh="隐私政策">
+      Privacy Policy
+    </div>
+    <div class="privacy-content"
+         data-i18n-en="We collect and use your contact information (such as name, phone number, email and WeChat) only for providing real estate services including buying, selling and investing in properties. You may opt out of communications at any time by replying 'stop' to text messages, using the unsubscribe link in emails, or by contacting the broker directly.
+
+We do not sell your personal information to third parties. Where necessary for a transaction, we may share your information with related service providers such as mortgage brokers, lawyers, home inspectors or insurance providers, and only to the extent required to complete the service, or where required by law.
+
+By submitting forms on this website, you confirm that the information you provide is accurate and that you are authorized to be contacted using the details you submit."
+         data-i18n-zh="我们仅在为您提供与房产相关的服务（包括买房、卖房、换房及房产投资）时，使用您在本网站提交的姓名、电话、电子邮箱、微信等联系方式。您可随时通过回复短信“stop”、点击邮件中的退订链接，或直接联系经纪人来取消接收相关信息。
+
+我们不会将您的个人信息出售给任何第三方。仅在完成交易所必需的情况下，我们才会在获得您同意或法律要求的前提下，将您的信息提供给与交易相关的服务方，例如贷款经纪、律师、验房师或保险公司等，且仅限于完成服务所需的范围。
+
+当您在本网站提交表格时，即表示您确认所提供的信息真实准确，并授权我们通过这些联系方式与您取得联系。">
+      We collect and use your contact information (such as name, phone number, email and WeChat) only for providing real estate services including buying, selling and investing in properties. You may opt out of communications at any time by replying 'stop' to text messages, using the unsubscribe link in emails, or by contacting the broker directly.
+
+We do not sell your personal information to third parties. Where necessary for a transaction, we may share your information with related service providers such as mortgage brokers, lawyers, home inspectors or insurance providers, and only to the extent required to complete the service, or where required by law.
+
+By submitting forms on this website, you confirm that the information you provide is accurate and that you are authorized to be contacted using the details you submit.
+    </div>
+  </div>
+</div>
+
+
     
   <footer>
     © <span id="year"></span> STAR RESIDENCE REAL ESTATE · Broker: Delbert Zhou · ANJIA REALTY INC.
@@ -3430,6 +3524,38 @@ document.addEventListener('DOMContentLoaded', loadVisitCounter);
         });
       }
     })();
+
+
+      // ================== 隐私政策弹窗 ==================
+  (function () {
+    const privacyBackdrop = document.getElementById('privacyBackdrop');
+    const privacyCloseBtn = document.getElementById('privacyCloseBtn');
+
+    // 点击表单里的 [Privacy Policy] / 【隐私政策】
+    document.addEventListener('click', (e) => {
+      const link = e.target.closest('.privacy-link');
+      if (!link) return;
+      e.preventDefault();
+      if (privacyBackdrop) {
+        privacyBackdrop.style.display = 'flex';
+      }
+    });
+
+    // 关闭按钮
+    if (privacyCloseBtn && privacyBackdrop) {
+      privacyCloseBtn.addEventListener('click', () => {
+        privacyBackdrop.style.display = 'none';
+      });
+
+      // 点击遮罩空白处关闭
+      privacyBackdrop.addEventListener('click', (e) => {
+        if (e.target === privacyBackdrop) {
+          privacyBackdrop.style.display = 'none';
+        }
+      });
+    }
+  })();
+
   
     // ================== 买房 / 卖房 需求切换（首页 + 弹窗） ==================
     function setupNeedFields(needId, sellId, buyId) {
