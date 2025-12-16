@@ -729,6 +729,20 @@ select[name="needType"]:focus {
   cursor: pointer;
 }
 
+/* 分享按钮20251216   */
+.share-btn{
+  display:inline-block;
+  padding:8px 16px;
+  border-radius:999px;
+  border:1px solid rgba(0,0,0,0.12);
+  background:#fff;
+  cursor:pointer;
+  font-weight:700;
+  font-size:0.85rem;
+  margin:8px 0 12px;
+}
+.share-btn:hover{ background:#f3f6ff; }
+
 
 
   </style>
@@ -3644,7 +3658,7 @@ document.addEventListener('DOMContentLoaded', loadVisitCounter);
       });
     });
   
-    // ================== 详情弹窗 ==================
+    // ================== 详情弹窗 ==================  //20251216 添加转发功能
     const detailBackdrop = document.getElementById("detailBackdrop");
     const detailContent  = document.getElementById("detailContent");
     const detailCloseBtn = document.getElementById("detailCloseBtn");
@@ -3659,6 +3673,60 @@ document.addEventListener('DOMContentLoaded', loadVisitCounter);
   
       // 填充详情内容
       detailContent.innerHTML = tpl.innerHTML;
+
+
+      // ====== 自动插入 转发/分享按钮（标题下面）======20251216
+(function injectShareButton() {
+  const lang = localStorage.getItem("dz_lang") || "en";
+  const btnText = lang.startsWith('zh') ? '转发 / 分享' : 'Share';
+
+  // 避免重复插入
+  if (detailContent.querySelector('.share-btn')) return;
+
+  const title = detailContent.querySelector('.detail-title');
+  if (!title) return;
+
+  const btn = document.createElement('button');
+  btn.type = 'button';
+  btn.className = 'share-btn';
+  btn.textContent = btnText;
+
+  btn.addEventListener('click', () => doShare(card));
+  title.insertAdjacentElement('afterend', btn);
+})();
+
+
+function buildShareUrl(card) {
+  // 专业版：用卡片唯一ID作为 hash
+  const id = card.getAttribute('data-card-id') || card.id;
+  return `${location.origin}${location.pathname}#${id}`;
+}
+
+async function doShare(card) {
+  const lang = localStorage.getItem("dz_lang") || "en";
+  const titleEl = card.querySelector(".video-title");
+  const title = titleEl ? titleEl.textContent.trim() : (lang.startsWith('zh') ? "房源详情" : "Listing Details");
+  const url = buildShareUrl(card);
+  const text = lang.startsWith('zh') ? `分享给你：${title}` : `Sharing: ${title}`;
+
+  try {
+    if (navigator.share) {
+      await navigator.share({ title, text, url });
+      return;
+    }
+    await navigator.clipboard.writeText(url);
+    alert(lang.startsWith('zh')
+      ? "链接已复制，可以粘贴到微信/短信转发。"
+      : "Link copied. Paste it to share.");
+  } catch (e) {
+    console.error("Share failed:", e);
+    alert(lang.startsWith('zh')
+      ? "转发失败，请手动复制地址栏链接。"
+      : "Share failed. Please copy the URL manually.");
+  }
+}
+
+
   
       // 根据当前语言处理多语言内容
       const currentLang = localStorage.getItem("dz_lang") || "en";
@@ -3750,10 +3818,13 @@ document.addEventListener('DOMContentLoaded', loadVisitCounter);
       });
     }
 
-// 默认：20251209
+// 默认：20251209 //20251216 添加转发功能
 document.addEventListener('DOMContentLoaded', () => {
   initCollapsibleSections();
+  assignCardIds();
+  handleDeepLinkOpenDetail(); // 下一步会给你
 });
+
 
 function getCurrentLanguage() {
   // 优先用你前面存的 dz_lang
@@ -3829,6 +3900,21 @@ function initCollapsibleSections() {
   });
 }
 
+//20251216 添加转发功能
+function assignCardIds() {
+  document.querySelectorAll('.content-section').forEach(section => {
+    const sid = section.id || 'section';
+    const cards = section.querySelectorAll('.section-items .video-card');
+    cards.forEach((card, idx) => {
+      // 例：listings-item-1 / videos-item-2 ...
+      const id = `${sid}-item-${idx + 1}`;
+      card.id = id;
+      card.setAttribute('data-card-id', id);
+    });
+  });
+}
+//20251216 添加转发功能 <--
+
 function toggleSection(sectionId) {
   // 注意这里改成 .content-section#id
   const section = document.querySelector(`.content-section#${sectionId}`);
@@ -3854,7 +3940,32 @@ function updateSectionHintText(section) {
   }
 }
 
-    
+ //20251216 添加转发功能
+function findCardByHash() {
+  const hash = (location.hash || '').replace('#', '').trim();
+  if (!hash) return null;
+  return document.getElementById(hash);
+}
+
+function handleDeepLinkOpenDetail() {
+  const card = findCardByHash();
+  if (!card) return;
+
+  // 滚动到该卡片附近（可选，但体验更好）
+  card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+  // 自动打开详情
+  openDetailFromCard(card);
+}
+
+// 用户在站内切换 hash 时也能打开
+window.addEventListener('hashchange', () => {
+  handleDeepLinkOpenDetail();
+});
+
+
+
+
   </script>
   
 
