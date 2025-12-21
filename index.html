@@ -437,29 +437,6 @@ select[name="needType"]:focus {
 }
     
 
-/* --- 提交按钮样式（中等大小） --- */
-#inlineSubmitBtn, 
-#popupSubmitBtn {
-  display: inline-block;
-  background: var(--primary);
-  color: #fff;
-  font-weight: 700;
-  font-size: 0.95rem;
-  padding: 9px 22px;
-  border: none;
-  border-radius: 999px;
-  cursor: pointer;
-  box-shadow: 0 3px 10px rgba(0, 76, 151, 0.2);
-  transition: all 0.25s ease;
-}
-
-#inlineSubmitBtn:hover,
-#popupSubmitBtn:hover {
-  background: #013f7d;
-  transform: translateY(-1px);
-  box-shadow: 0 5px 14px rgba(0, 76, 151, 0.25);
-}
-
 /* ===== 提交按钮（扩大一倍）20251211 ===== */
 #inlineSubmitBtn,
 #popupSubmitBtn {
@@ -712,8 +689,9 @@ select[name="needType"]:focus {
 
 /* 展开时：全部项目显示 */
 .content-section.expanded .hidden-when-collapsed {
-  display: block;   /* 如果项目是 flex 就改成 flex */
+  display: revert;
 }
+
 
 /* 提示文字 */
 .section-expand-hint {
@@ -3568,7 +3546,12 @@ document.addEventListener('DOMContentLoaded', loadVisitCounter);
     });
   
     // 初始语言
-    const savedLang = localStorage.getItem("dz_lang") || "en";
+    const savedLang =
+  localStorage.getItem("dz_lang") ||
+  (document.body.getAttribute("data-lang") || "en");
+
+
+
     setLanguage(savedLang);
   
     // ================== 提交表单到后端 ==================
@@ -3696,8 +3679,8 @@ document.addEventListener('DOMContentLoaded', loadVisitCounter);
     setupNeedFields("needTypePopup", "sellFieldsPopup", "buyFieldsPopup");
   
     // ================== 各栏目自动编号（#1, #2...） ==================
-    document.querySelectorAll("section.card").forEach(section => {
-      const cards = section.querySelectorAll(".video-card");
+    document.querySelectorAll(".content-section").forEach(section => {
+      const cards = section.querySelectorAll(".section-items .video-card");
       cards.forEach((card, idx) => {
         const noEl = card.querySelector(".item-no");
         if (noEl) noEl.textContent = "#" + (idx + 1);
