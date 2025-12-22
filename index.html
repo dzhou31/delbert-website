@@ -875,11 +875,22 @@ window.widgetTracker("send", "pageview");
         </p>
 
 <form id="inlineContactForm">
-  <label data-i18n-en="Name" data-i18n-zh="姓名">Name</label>
-  <input type="text" name="name" required>
 
-  <label data-i18n-en="Phone" data-i18n-zh="电话">Phone</label>
-  <input type="text" name="phone" required>
+  <label data-i18n-en="Name" data-i18n-zh="姓名">Name</label>
+<input type="text" name="name" required minlength="1" maxlength="50">
+
+<label data-i18n-en="Phone" data-i18n-zh="电话">Phone</label>
+<input
+  type="tel"
+  name="phone"
+  required
+  inputmode="numeric"
+  autocomplete="tel"
+  maxlength="10"
+  pattern="^\d{10}$"
+  placeholder="10-digit phone / 10位电话号码"
+/>
+
 
   <label data-i18n-en="Email" data-i18n-zh="邮箱">Email</label>
   <input type="email" name="email" required>
@@ -3323,11 +3334,21 @@ When listings move fast:&lt;/p&gt;
         You’ve been browsing for a while. If you have any questions about buying, selling or investing in real estate, leave your contact information and I will follow up personally.
       </div>
 <form id="popupForm">
-  <label data-i18n-en="Name" data-i18n-zh="姓名">Name</label>
-  <input type="text" name="name" required>
+<label data-i18n-en="Name" data-i18n-zh="姓名">Name</label>
+<input type="text" name="name" required minlength="1" maxlength="50">
 
-  <label data-i18n-en="Phone" data-i18n-zh="电话">Phone</label>
-  <input type="text" name="phone" required>
+<label data-i18n-en="Phone" data-i18n-zh="电话">Phone</label>
+<input
+  type="tel"
+  name="phone"
+  required
+  inputmode="numeric"
+  autocomplete="tel"
+  maxlength="10"
+  pattern="^\d{10}$"
+  placeholder="10-digit phone / 10位电话号码"
+/>
+
 
   <label data-i18n-en="Email" data-i18n-zh="邮箱">Email</label>
   <input type="email" name="email" required>
@@ -3553,6 +3574,39 @@ document.addEventListener('DOMContentLoaded', loadVisitCounter);
 
 
     setLanguage(savedLang);
+
+    //20251221
+
+    function validateNamePhone(form) {
+  const lang = localStorage.getItem("dz_lang") || "en";
+
+  const name = (form.querySelector('input[name="name"]')?.value || "").trim();
+  const phoneInput = form.querySelector('input[name="phone"]');
+  let phone = (phoneInput?.value || "").trim();
+
+  // 姓名必填
+  if (!name) {
+    alert(lang === "zh" ? "请填写姓名。" : "Please enter your name.");
+    return false;
+  }
+
+  // 电话必填 + 必须10位数字
+  if (!phone) {
+    alert(lang === "zh" ? "请填写电话。" : "Please enter your phone number.");
+    return false;
+  }
+
+  // 强制只允许10位数字（不允许 647-xxx / (647)xxx）
+  if (!/^\d{10}$/.test(phone)) {
+    alert(lang === "zh" ? "电话必须是10位数字（不含空格和符号）。" : "Phone must be exactly 10 digits (numbers only).");
+    return false;
+  }
+
+  return true;
+}
+
+
+
   
     // ================== 提交表单到后端 ==================
     async function submitFormToBackend(formId, successId, sourceTag) {
@@ -3560,8 +3614,11 @@ document.addEventListener('DOMContentLoaded', loadVisitCounter);
       const success = document.getElementById(successId);
       if (!form || !success) return;
   
-      const formData = new FormData(form);
-      formData.append('source', sourceTag);
+if (!validateNamePhone(form)) return;
+
+const formData = new FormData(form);
+formData.append('source', sourceTag);
+
   
       try {
         const res = await fetch(FORM_ENDPOINT, {
