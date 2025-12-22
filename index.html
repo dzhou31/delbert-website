@@ -738,7 +738,6 @@ select[name="needType"]:focus {
 .site-footer{
   background:#0f172a;
   color:#e5e7eb;
-  margin-top:40px;
   padding:36px 16px 18px;
 }
 
@@ -746,24 +745,23 @@ select[name="needType"]:focus {
   max-width:1080px;
   margin:0 auto;
   display:grid;
-  grid-template-columns: 1.6fr 1fr 1fr;
+  grid-template-columns:1.6fr 1fr 1fr;
   gap:24px;
 }
 
 @media (max-width:900px){
-  .footer-inner{
-    grid-template-columns:1fr;
-  }
+  .footer-inner{grid-template-columns:1fr;}
 }
 
 .footer-block h4{
-  font-size:0.95rem;
+  font-size:.95rem;
   margin-bottom:8px;
   color:#fff;
 }
 
-.footer-block p{
-  font-size:0.82rem;
+.footer-block p,
+.footer-block li{
+  font-size:.82rem;
   line-height:1.6;
   color:#d1d5db;
 }
@@ -771,35 +769,20 @@ select[name="needType"]:focus {
 .footer-block ul{
   margin:8px 0 0;
   padding-left:18px;
-  font-size:0.8rem;
-  color:#d1d5db;
-}
-.footer-block ul li{
-  margin-bottom:4px;
 }
 
 .footer-social{
   display:flex;
-  gap:12px;
-  margin:10px 0 6px;
+  flex-direction:column;
+  gap:6px;
 }
 .footer-social a{
-  display:inline-flex;
-  width:36px;
-  height:36px;
-  align-items:center;
-  justify-content:center;
-  border-radius:50%;
-  background:rgba(255,255,255,0.08);
-  transition:transform .2s ease, background .2s ease;
+  color:#93c5fd;
+  text-decoration:none;
+  font-size:.82rem;
 }
 .footer-social a:hover{
-  background:rgba(255,255,255,0.18);
-  transform:translateY(-2px);
-}
-.footer-social img{
-  width:18px;
-  height:18px;
+  text-decoration:underline;
 }
 
 .footer-contact a{
@@ -811,17 +794,18 @@ select[name="needType"]:focus {
 }
 
 .footer-note{
-  font-size:0.75rem;
+  font-size:.75rem;
   color:#9ca3af;
   margin-top:6px;
 }
 
 .footer-bottom{
-  text-align:center;
   margin-top:24px;
-  font-size:0.72rem;
+  text-align:center;
+  font-size:.72rem;
   color:#9ca3af;
 }
+
 
 
 
@@ -3585,58 +3569,118 @@ By submitting forms on this website, you confirm that the information you provid
 
     <!-- Why Delbert -->
     <div class="footer-block">
-      <h4>为什么选择 Delbert Zhou</h4>
-      <p>
-        <strong>服务至上 · 全程无忧 · 性价比高</strong><br>
+      <h4 data-i18n-en="Why Choose Delbert Zhou"
+          data-i18n-zh="为什么选择 Delbert Zhou">
+        为什么选择 Delbert Zhou
+      </h4>
+
+      <p
+        data-i18n-en="Service-first. End-to-end support. High value pricing."
+        data-i18n-zh="服务至上 · 全程无忧 · 性价比高">
+        服务至上 · 全程无忧 · 性价比高
+      </p>
+
+      <p
+        data-i18n-en="Positioned as your trusted local real estate expert, backed by a fully integrated professional team."
+        data-i18n-zh="定位于您身边的房产专家，提供全程配套的专业团队支持。">
         定位于您身边的房产专家，提供全程配套的专业团队支持。
       </p>
+
       <ul>
-        <li>20 多年销售经验，谈判专家</li>
-        <li>卖房：精准提炼房屋亮点，自媒体全渠道推广</li>
-        <li>买房：专注所以专业，精于谈判，帮您有效避坑</li>
-        <li>多种灵活佣金方案，匹配不同客户需求</li>
+        <li
+          data-i18n-en="20+ years of sales experience, expert negotiator"
+          data-i18n-zh="20 多年销售经验，谈判专家">
+          20 多年销售经验，谈判专家
+        </li>
+        <li
+          data-i18n-en="Selling: Highlighting your property with concise messaging and social media marketing"
+          data-i18n-zh="卖房：以最精炼的语言突出房屋特点，自媒体全渠道推广">
+          卖房：以最精炼的语言突出房屋特点，自媒体全渠道推广
+        </li>
+        <li
+          data-i18n-en="Buying: Focused, strategic, and skilled at helping you avoid costly mistakes"
+          data-i18n-zh="买房：专注所以专业，精于谈判，帮您有效避坑">
+          买房：专注所以专业，精于谈判，帮您有效避坑
+        </li>
+        <li
+          data-i18n-en="Flexible commission options tailored to different client needs"
+          data-i18n-zh="多种灵活佣金方案，满足不同客户需求">
+          多种灵活佣金方案，满足不同客户需求
+        </li>
       </ul>
     </div>
 
-    <!-- Social Media -->
+    <!-- Social -->
     <div class="footer-block">
-      <h4>关注我</h4>
+      <h4 data-i18n-en="Follow Me"
+          data-i18n-zh="关注我">
+        关注我
+      </h4>
+
       <div class="footer-social">
-        <a href="https://www.youtube.com/" target="_blank" aria-label="YouTube">
-          <img src="icon-youtube.svg" alt="YouTube">
-        </a>
-        <a href="https://www.facebook.com/" target="_blank" aria-label="Facebook">
-          <img src="icon-facebook.svg" alt="Facebook">
-        </a>
-        <a href="https://www.instagram.com/" target="_blank" aria-label="Instagram">
-          <img src="icon-instagram.svg" alt="Instagram">
-        </a>
-        <a href="https://www.xiaohongshu.com/" target="_blank" aria-label="Xiaohongshu">
-          <img src="icon-xhs.svg" alt="小红书">
+        <a href="https://www.youtube.com/" target="_blank" aria-label="YouTube">YouTube</a>
+        <a href="https://www.facebook.com/" target="_blank" aria-label="Facebook">Facebook</a>
+        <a href="https://www.instagram.com/" target="_blank" aria-label="Instagram">Instagram</a>
+        <a href="https://www.xiaohongshu.com/" target="_blank" aria-label="Xiaohongshu"
+           data-i18n-en="Xiaohongshu"
+           data-i18n-zh="小红书">
+          小红书
         </a>
       </div>
-      <p class="footer-note">获取最新房产视频、市场解读与真实案例</p>
+
+      <p class="footer-note"
+         data-i18n-en="Market insights, real cases, and real estate videos"
+         data-i18n-zh="房产市场解读、真实案例与视频内容">
+        房产市场解读、真实案例与视频内容
+      </p>
     </div>
 
     <!-- Contact -->
     <div class="footer-block">
-      <h4>联系我</h4>
+      <h4 data-i18n-en="Contact Me"
+          data-i18n-zh="联系我">
+        联系我
+      </h4>
+
       <p class="footer-contact">
-        📞 <a href="tel:19056173988">905-617-3988</a><br>
-        📧 <a href="mailto:delbertzhou11@gmail.com">delbertzhou11@gmail.com</a><br>
-        💬 WeChat：Z_9056173988
+        <span
+          data-i18n-en="Phone:"
+          data-i18n-zh="电话：">
+          电话：
+        </span>
+        <a href="tel:19056173988">905-617-3988</a><br>
+
+        <span
+          data-i18n-en="Email:"
+          data-i18n-zh="邮箱：">
+          邮箱：
+        </span>
+        <a href="mailto:delbertzhou11@gmail.com">delbertzhou11@gmail.com</a><br>
+
+        <span
+          data-i18n-en="WeChat:"
+          data-i18n-zh="微信：">
+          微信：
+        </span>
+        Z_9056173988
       </p>
-      <p class="footer-note">
+
+      <p class="footer-note"
+         data-i18n-en="Greater Toronto Area · Buy · Sell · Invest"
+         data-i18n-zh="大多伦多地区 · 买房 · 卖房 · 投资">
         大多伦多地区 · 买房 · 卖房 · 投资
       </p>
     </div>
 
   </div>
 
-  <div class="footer-bottom">
-    © <span id="year"></span> STAR RESIDENCE REAL ESTATE · Broker: Delbert Zhou · ANJIA REALTY INC.
+  <div class="footer-bottom"
+       data-i18n-en="© STAR RESIDENCE REAL ESTATE · Broker: Delbert Zhou · ANJIA REALTY INC."
+       data-i18n-zh="© STAR RESIDENCE REAL ESTATE · 经纪：Delbert Zhou · 安家地产">
+    © STAR RESIDENCE REAL ESTATE · 经纪：Delbert Zhou · 安家地产
   </div>
 </footer>
+
 
 
 
