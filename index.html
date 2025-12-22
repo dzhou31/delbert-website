@@ -2861,7 +2861,7 @@ When listings move fast:&lt;/p&gt;
     </article>
 
      <!-- 知识文章 3 -->   
-    <article class="video-card">
+    <article class="video-card" data-detail-type="link-only">
   <a class="video-thumb-link" href="https://www.ratehub.ca/toronto-mortgage-calculator" target="_blank" rel="noopener">
     <img src="mortgage.png" alt="Mortgage Calculator" class="video-thumb">
   </a>
@@ -3901,15 +3901,22 @@ async function doShare(card) {
     }
   
     // 点击封面图片打开详情
-    document.addEventListener("click", (e) => {
-      const link = e.target.closest(".video-thumb-link");
-      if (!link) return;
-      const card = link.closest(".video-card");
-      if (!card) return;
-  
-      e.preventDefault();
-      openDetailFromCard(card);
-    });
+document.addEventListener("click", (e) => {
+  const link = e.target.closest(".video-thumb-link");
+  if (!link) return;
+
+  const card = link.closest(".video-card");
+  if (!card) return;
+
+  // ✅ 如果是纯外链卡片，直接放行
+  if (card.dataset.detailType === "link-only") {
+    return; // 不 preventDefault
+  }
+
+  e.preventDefault();
+  openDetailFromCard(card);
+});
+
   
     // 关闭详情弹窗
     if (detailCloseBtn && detailBackdrop) {
