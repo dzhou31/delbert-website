@@ -721,7 +721,17 @@ select[name="needType"]:focus {
 }
 .share-btn:hover{ background:#f3f6ff; }
 
-
+/* Fix: link-only 标题被全局 a{color:#fff} 变白 */
+.video-title-link { 
+  color: var(--text) !important;
+  text-decoration: none;
+}
+.video-title-link .video-title{
+  color: var(--text) !important;
+}
+.video-title-link:hover{
+  text-decoration: underline;
+}
 
   </style>
   
