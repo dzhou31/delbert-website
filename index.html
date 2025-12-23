@@ -735,10 +735,10 @@ select[name="needType"]:focus {
 
 
 /* ===== Footer ===== */
+
 .site-footer{
   background:#0f172a;
   color:#e5e7eb;
-  margin-top:40px;
   padding:36px 16px 18px;
 }
 
@@ -746,24 +746,23 @@ select[name="needType"]:focus {
   max-width:1080px;
   margin:0 auto;
   display:grid;
-  grid-template-columns: 1.6fr 1fr 1fr;
+  grid-template-columns:1.6fr 1fr 1fr;
   gap:24px;
 }
 
 @media (max-width:900px){
-  .footer-inner{
-    grid-template-columns:1fr;
-  }
+  .footer-inner{grid-template-columns:1fr;}
 }
 
 .footer-block h4{
-  font-size:0.95rem;
+  font-size:.95rem;
   margin-bottom:8px;
   color:#fff;
 }
 
-.footer-block p{
-  font-size:0.82rem;
+.footer-block p,
+.footer-block li{
+  font-size:.82rem;
   line-height:1.6;
   color:#d1d5db;
 }
@@ -771,35 +770,20 @@ select[name="needType"]:focus {
 .footer-block ul{
   margin:8px 0 0;
   padding-left:18px;
-  font-size:0.8rem;
-  color:#d1d5db;
-}
-.footer-block ul li{
-  margin-bottom:4px;
 }
 
 .footer-social{
   display:flex;
-  gap:12px;
-  margin:10px 0 6px;
+  flex-direction:column;
+  gap:6px;
 }
 .footer-social a{
-  display:inline-flex;
-  width:36px;
-  height:36px;
-  align-items:center;
-  justify-content:center;
-  border-radius:50%;
-  background:rgba(255,255,255,0.08);
-  transition:transform .2s ease, background .2s ease;
+  color:#93c5fd;
+  text-decoration:none;
+  font-size:.82rem;
 }
 .footer-social a:hover{
-  background:rgba(255,255,255,0.18);
-  transform:translateY(-2px);
-}
-.footer-social img{
-  width:18px;
-  height:18px;
+  text-decoration:underline;
 }
 
 .footer-contact a{
@@ -811,15 +795,15 @@ select[name="needType"]:focus {
 }
 
 .footer-note{
-  font-size:0.75rem;
+  font-size:.75rem;
   color:#9ca3af;
   margin-top:6px;
 }
 
 .footer-bottom{
-  text-align:center;
   margin-top:24px;
-  font-size:0.72rem;
+  text-align:center;
+  font-size:.72rem;
   color:#9ca3af;
 }
 
@@ -3690,11 +3674,16 @@ By submitting forms on this website, you confirm that the information you provid
 
   </div>
 
-  <div class="footer-bottom"
-       data-i18n-en="© STAR RESIDENCE REAL ESTATE · Broker: Delbert Zhou · ANJIA REALTY INC."
-       data-i18n-zh="© STAR RESIDENCE REAL ESTATE · 经纪：Delbert Zhou · 安家地产">
-    © STAR RESIDENCE REAL ESTATE · 经纪：Delbert Zhou · 安家地产
-  </div>
+<div class="footer-bottom">
+  © <span id="year"></span>
+  <span data-i18n-en="STAR RESIDENCE REAL ESTATE · Broker: Delbert Zhou · ANJIA REALTY INC."
+        data-i18n-zh="STAR RESIDENCE REAL ESTATE · 经纪：Delbert Zhou · 安家地产 ANJIA REALTY INC.">
+    STAR RESIDENCE REAL ESTATE · 经纪：Delbert Zhou · 安家地产 ANJIA REALTY INC.
+  </span>
+</div>
+
+
+
 </footer>
 
 
@@ -3705,7 +3694,9 @@ By submitting forms on this website, you confirm that the information you provid
 
 
   // ===== 年份 =====
-document.getElementById("year").textContent = new Date().getFullYear();
+const yearEl = document.getElementById("year");
+if (yearEl) yearEl.textContent = new Date().getFullYear();
+
 
 // ===== 表单后端地址（原来那条，保持不变） =====
 const FORM_ENDPOINT =
