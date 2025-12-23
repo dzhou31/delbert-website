@@ -888,6 +888,19 @@ select[name="needType"]:focus {
   box-shadow:0 8px 20px rgba(0,0,0,0.25);
 }
 
+/* 提交成功闪烁效果 */
+.success-flash {
+  animation: successFlash 1.2s ease;
+}
+
+@keyframes successFlash {
+  0% {
+    background: rgba(26, 127, 55, 0.18);
+  }
+  100% {
+    background: transparent;
+  }
+}
 
 
   </style>
@@ -3981,15 +3994,48 @@ async function submitFormToBackend(formId, successId, sourceTag){
     // 你的 Apps Script 如果返回 JSON，这里能正常 parse；否则也不会影响后面逻辑
     try { await res.json(); } catch(e){}
 
+    // 显示成功提示
     success.style.display = "block";
-    setTimeout(()=>{ success.style.display = "none"; }, 1500);
+    success.classList.add("success-flash");
+
+    // 1.2 秒后隐藏成功提示
+    setTimeout(() => {
+      success.style.display = "none";
+      success.classList.remove("success-flash");
+    }, 1200);
 
     form.reset();
 
-    // ✅ 弹窗表单：成功后自动关闭
+    // ===== 提交成功后的统一行为 =====
+
+    // 如果是弹窗表单，先关闭弹窗
     if (sourceTag === "popup") {
       closePopup(true);
     }
+
+    // 滚动到顶部 contact 区域
+    const contactSection = document.getElementById("contact");
+    if (contactSection) {
+      contactSection.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
+
+      // 在 contact 区域也闪一下成功提示（如果存在）
+      const inlineSuccess = document.getElementById("inlineSuccess");
+      if (inlineSuccess) {
+        inlineSuccess.style.display = "block";
+        inlineSuccess.classList.add("success-flash");
+
+        setTimeout(() => {
+          inlineSuccess.style.display = "none";
+          inlineSuccess.classList.remove("success-flash");
+        }, 1200);
+      }
+    }
+
+
+
   }catch(err){
     console.error("Form submit error:", err);
     alert("提交失败，请稍后再试 / Failed to submit, please try again later.");
