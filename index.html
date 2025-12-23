@@ -734,35 +734,39 @@ select[name="needType"]:focus {
 }
 
 
-/* ===== Footer ===== */
-
+/* ===== Footer（与 Header 同背景，左右铺满） ===== */
 .site-footer{
-  background:#0f172a;
+  background: linear-gradient(135deg, var(--primary), #012b52);
   color:#e5e7eb;
+  margin-top:40px;
   padding:36px 16px 18px;
+  width:100%;
 }
 
+/* 内容居中，不影响左右铺满 */
 .footer-inner{
   max-width:1080px;
   margin:0 auto;
   display:grid;
-  grid-template-columns:1.6fr 1fr 1fr;
+  grid-template-columns: 1.6fr 1fr 1fr;
   gap:24px;
 }
 
 @media (max-width:900px){
-  .footer-inner{grid-template-columns:1fr;}
+  .footer-inner{
+    grid-template-columns:1fr;
+  }
 }
 
 .footer-block h4{
-  font-size:.95rem;
+  font-size:0.95rem;
   margin-bottom:8px;
   color:#fff;
 }
 
 .footer-block p,
 .footer-block li{
-  font-size:.82rem;
+  font-size:0.82rem;
   line-height:1.6;
   color:#d1d5db;
 }
@@ -772,18 +776,11 @@ select[name="needType"]:focus {
   padding-left:18px;
 }
 
-.footer-social{
-  display:flex;
-  flex-direction:column;
-  gap:6px;
-}
 .footer-social a{
-  color:#93c5fd;
-  text-decoration:none;
-  font-size:.82rem;
+  background:rgba(255,255,255,0.12);
 }
 .footer-social a:hover{
-  text-decoration:underline;
+  background:rgba(255,255,255,0.22);
 }
 
 .footer-contact a{
@@ -794,17 +791,15 @@ select[name="needType"]:focus {
   text-decoration:underline;
 }
 
-.footer-note{
-  font-size:.75rem;
-  color:#9ca3af;
-  margin-top:6px;
-}
-
+/* footer 最底部一行 */
 .footer-bottom{
-  margin-top:24px;
+  max-width:1080px;
+  margin:24px auto 0;
+  padding-top:12px;
+  border-top:1px solid rgba(255,255,255,0.15);
   text-align:center;
-  font-size:.72rem;
-  color:#9ca3af;
+  font-size:0.72rem;
+  color:#cbd5f5;
 }
 
 
@@ -3649,6 +3644,13 @@ By submitting forms on this website, you confirm that the information you provid
           电话：
         </span>
         <a href="tel:19056173988">905-617-3988</a><br>
+
+        <span
+          data-i18n-en="Phone:"
+          data-i18n-zh="电话：">
+          电话：
+        </span>
+        <a href="tel:16479553301">647-955-3301</a><br>
 
         <span
           data-i18n-en="Email:"
