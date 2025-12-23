@@ -3955,26 +3955,34 @@ if (!validateNamePhone(form)) return;
 const formData = new FormData(form);
 formData.append('source', sourceTag);
 
-  
-      try {
-        const res = await fetch(FORM_ENDPOINT, {
-          method: 'POST',
-          body: formData
-        });
-  
-        if (!res.ok) throw new Error('Network response was not ok');
-        const data = await res.json();
-        console.log('Form submitted:', data);
-  
-        success.style.display = 'block';
-        setTimeout(() => { success.style.display = 'none'; }, 4000);
-        form.reset();
-      } catch (err) {
-        console.error('Form submit error:', err);
-        alert('提交失败，请稍后再试 / Failed to submit, please try again later.');
-      }
-    }
-  
+ try {
+  const res = await fetch(FORM_ENDPOINT, {
+    method: 'POST',
+    body: formData
+  });
+
+  if (!res.ok) throw new Error('Network response was not ok');
+  const data = await res.json();
+  console.log('Form submitted:', data);
+
+  success.style.display = 'block';
+  setTimeout(() => { success.style.display = 'none'; }, 1500);
+
+  form.reset();
+
+  // ✅ 如果是弹窗表单：提交成功后自动关闭弹窗
+  if (sourceTag === "popup") {
+    const backdrop = document.getElementById("popupBackdrop");
+    if (backdrop) backdrop.style.display = "none";
+    localStorage.setItem("dz_popup_seen", "1");
+  }
+
+} catch (err) {
+  console.error('Form submit error:', err);
+  alert('提交失败，请稍后再试 / Failed to submit, please try again later.');
+}
+ 
+
     // 绑定两个表单按钮
     const inlineBtn = document.getElementById("inlineSubmitBtn");
     if (inlineBtn) {
@@ -4416,6 +4424,41 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 50); // 50ms 足够，避免浏览器未渲染完成
   });
 });
+
+
+// ===== Popup close: Later button / click backdrop / ESC =====
+document.addEventListener("DOMContentLoaded", () => {
+  const backdrop = document.getElementById("popupBackdrop");
+  const closeBtn = document.getElementById("popupCloseBtn");
+  if (!backdrop) return;
+
+  function closePopup() {
+    backdrop.style.display = "none";
+    localStorage.setItem("dz_popup_seen", "1"); // 关掉就算看过一次
+  }
+
+  // “下次再说”
+  if (closeBtn) {
+    closeBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      closePopup();
+    });
+  }
+
+  // 点遮罩空白处关闭
+  backdrop.addEventListener("click", (e) => {
+    if (e.target === backdrop) closePopup();
+  });
+
+  // ESC 关闭
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && backdrop.style.display === "flex") {
+      closePopup();
+    }
+  });
+});
+
 
 
 
