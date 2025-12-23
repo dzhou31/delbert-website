@@ -865,31 +865,34 @@ select[name="needType"]:focus {
   padding-left: 0;
 }
 
-/* ===== Footer CTA Button ===== */
-.footer-cta{
-  display:inline-block;
+/* ===== Footer CTA Button (open popup) ===== */
+.footer-cta-btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
   margin-top:12px;
   padding:10px 22px;
   border-radius:999px;
   font-size:0.85rem;
   font-weight:700;
-  text-decoration:none;
+  border:none;
+  cursor:pointer;
   color:#004c97;
   background:#ffffff;
   box-shadow:0 4px 14px rgba(0,0,0,0.18);
   transition:transform .2s ease, box-shadow .2s ease, background .2s ease;
 }
-
-.footer-cta:hover{
+.footer-cta-btn:hover{
   background:#f5f8ff;
   transform:translateY(-2px);
   box-shadow:0 8px 20px rgba(0,0,0,0.25);
 }
 
 
+
   </style>
 
-
+  
   <!-- begin Widget Tracker Code -->
 <script>
 (function(w,i,d,g,e,t){w["WidgetTrackerObject"]=g;(w[g]=w[g]||function()
@@ -3763,12 +3766,14 @@ By submitting forms on this website, you confirm that the information you provid
         大多伦多地区 · 买房 · 卖房 · 投资
       </p>
 
-      <a href="#contact"
-          class="footer-cta"
-          data-i18n-en="Book a Free Home Evaluation"
-          data-i18n-zh="预约免费评估">
-           预约免费评估
-      </a>
+<button type="button"
+        class="footer-cta-btn"
+        id="footerCtaBtn"
+        data-i18n-en="Book a Free Home Evaluation"
+        data-i18n-zh="预约免费评估">
+  预约免费评估
+</button>
+
 
     </div>
 
@@ -4387,16 +4392,29 @@ window.addEventListener('hashchange', () => {
   handleDeepLinkOpenDetail();
 });
 
-//CTA优雅滑到联系表单
-document.addEventListener("click", (e) => {
-  const cta = e.target.closest(".footer-cta");
-  if (!cta) return;
+// ===== Footer CTA: open popup & focus on name field =====
+document.addEventListener("DOMContentLoaded", () => {
+  const btn = document.getElementById("footerCtaBtn");
+  const backdrop = document.getElementById("popupBackdrop");
+  if (!btn || !backdrop) return;
 
-  const target = document.querySelector(cta.getAttribute("href"));
-  if (!target) return;
+  btn.addEventListener("click", (e) => {
+    e.preventDefault();
+    e.stopPropagation();
 
-  e.preventDefault();
-  target.scrollIntoView({ behavior: "smooth", block: "start" });
+    // 打开弹窗
+    backdrop.style.display = "flex";
+
+    // 等弹窗渲染完成后，聚焦到“姓名”输入框
+    setTimeout(() => {
+      const nameInput = backdrop.querySelector(
+        'input[name="name"]'
+      );
+      if (nameInput) {
+        nameInput.focus();
+      }
+    }, 50); // 50ms 足够，避免浏览器未渲染完成
+  });
 });
 
 
