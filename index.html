@@ -889,7 +889,7 @@ select[name="needType"]:focus {
 
   </style>
 
-  
+
   <!-- begin Widget Tracker Code -->
 <script>
 (function(w,i,d,g,e,t){w["WidgetTrackerObject"]=g;(w[g]=w[g]||function()
@@ -4385,6 +4385,18 @@ function handleDeepLinkOpenDetail() {
 // 用户在站内切换 hash 时也能打开
 window.addEventListener('hashchange', () => {
   handleDeepLinkOpenDetail();
+});
+
+//CTA优雅滑到联系表单
+document.addEventListener("click", (e) => {
+  const cta = e.target.closest(".footer-cta");
+  if (!cta) return;
+
+  const target = document.querySelector(cta.getAttribute("href"));
+  if (!target) return;
+
+  e.preventDefault();
+  target.scrollIntoView({ behavior: "smooth", block: "start" });
 });
 
 
