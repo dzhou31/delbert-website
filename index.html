@@ -3793,676 +3793,627 @@ By submitting forms on this website, you confirm that the information you provid
 
 
 
-
-  <script>
-
-
-
-  // ===== 年份 =====
-const yearEl = document.getElementById("year");
-if (yearEl) yearEl.textContent = new Date().getFullYear();
-
-
-// ===== 表单后端地址（原来那条，保持不变） =====
+<script>
+/* =========================
+   0) 基础配置
+========================= */
 const FORM_ENDPOINT =
-  'https://script.google.com/macros/s/AKfycbzoBFE_akQuKOJgierTDfaQRFsyd_it0rKu80wfd0VEWUHmBj8PDbCIYegQGtB50outCQ/exec';
+  "https://script.google.com/macros/s/AKfycbzoBFE_akQuKOJgierTDfaQRFsyd_it0rKu80wfd0VEWUHmBj8PDbCIYegQGtB50outCQ/exec";
 
-// ===== 全站访问计数后端地址（用最新的 Web App URL） =====
 const COUNTER_ENDPOINT =
-  'https://script.google.com/macros/s/AKfycbwdGyLkiOIPASRlkG0GHni-0dDW7tgXb3V1TY3gaCj1GJcs4VJ_8VuF4-fD3YGmJ0c/exec';
+  "https://script.google.com/macros/s/AKfycbwdGyLkiOIPASRlkG0GHni-0dDW7tgXb3V1TY3gaCj1GJcs4VJ_8VuF4-fD3YGmJ0c/exec";
 
-// ================== 全站访问计数（JSONP 版） ==================
-function handleVisitCount(data) {
-  // 这个函数会被 Apps Script 调用：handleVisitCount({ total: 123 })
-  const el = document.getElementById('visitCount');
-  if (!el) return;
 
-  if (data && typeof data.total === 'number') {
-    el.textContent = data.total;
-  } else {
-    el.textContent = '?';
-  }
+/* =========================
+   1) 小工具
+========================= */
+function $(sel, root=document){ return root.querySelector(sel); }
+function $all(sel, root=document){ return Array.from(root.querySelectorAll(sel)); }
+
+function getLang(){
+  return localStorage.getItem("dz_lang") || (document.body.getAttribute("data-lang") || "en");
+}
+function setLang(lang){
+  localStorage.setItem("dz_lang", lang);
+  document.documentElement.lang = (lang === "zh" ? "zh-Hans" : "en");
 }
 
-function loadVisitCounter() {
-  const script = document.createElement('script');
-  script.src = COUNTER_ENDPOINT + '?action=visit&callback=handleVisitCount';
+function todayISO(){
+  const d = new Date();
+  const y = d.getFullYear();
+  const m = String(d.getMonth()+1).padStart(2,"0");
+  const day = String(d.getDate()).padStart(2,"0");
+  return `${y}-${m}-${day}`;
+}
+
+/* =========================
+   2) 年份 & 全站计数
+========================= */
+function initYear(){
+  const yearEl = document.getElementById("year");
+  if (yearEl) yearEl.textContent = new Date().getFullYear();
+}
+
+// JSONP 回调：Apps Script 会调用 handleVisitCount({ total: 123 })
+function handleVisitCount(data){
+  const el = document.getElementById("visitCount");
+  if (!el) return;
+  if (data && typeof data.total === "number") el.textContent = data.total;
+  else el.textContent = "?";
+}
+
+function loadVisitCounter(){
+  const script = document.createElement("script");
+  script.src = COUNTER_ENDPOINT + "?action=visit&callback=handleVisitCount";
   script.defer = true;
   document.body.appendChild(script);
 }
 
-// 页面加载后执行一次
-document.addEventListener('DOMContentLoaded', loadVisitCounter);
 
+/* =========================
+   3) 语言切换（主页面 + 详情弹窗）
+========================= */
+function applyLangToPage(lang){
+  const elems = $all("[data-i18n-en]");
+  elems.forEach(el=>{
+    // 跳过详情弹窗内，避免破坏段落结构
+    if (el.closest("#detailBackdrop")) return;
 
+    const en = (el.getAttribute("data-i18n-en") || "").trim();
+    const zh = (el.getAttribute("data-i18n-zh") || "").trim();
+    const text = (lang === "zh" && zh) ? zh : en;
+    if (!text) return;
+    el.textContent = text;
+  });
+}
 
+function applyLangToDetail(root, lang){
+  const elems = $all("[data-i18n-en]", root);
+  elems.forEach(el=>{
+    const en = el.getAttribute("data-i18n-en") || "";
+    const zh = el.getAttribute("data-i18n-zh") || "";
 
-
-  
-    // ================== 语言切换 ==================
-    const langButtons = document.querySelectorAll(".lang-btn");
-  
-    // 只更新主页面（不管详情弹窗），避免破坏 <p> 结构
-    function applyLangToPage(lang) {
-      const elems = document.querySelectorAll("[data-i18n-en]");
-      elems.forEach(el => {
-        // 跳过详情弹窗里的内容，那里单独处理
-        if (el.closest("#detailBackdrop")) return;
-  
-        const en = (el.getAttribute("data-i18n-en") || "").trim();
-        const zh = (el.getAttribute("data-i18n-zh") || "").trim();
-        const text = (lang === "zh" && zh) ? zh : en;
-        if (!text) return;
-        el.textContent = text;
-      });
+    if (el.classList.contains("detail-body")) {
+      // 正文用 innerHTML 保持 <p>
+      const html = (lang === "zh" && zh) ? zh : en;
+      if (html) el.innerHTML = html;
+    } else {
+      const text = (lang === "zh" && zh) ? zh : en;
+      if (text) el.textContent = text.trim();
     }
-  
-    // 专门给详情弹窗内部用的多语言
-    function applyLangToDetail(root, lang) {
-      const elems = root.querySelectorAll("[data-i18n-en]");
-      elems.forEach(el => {
-        const en = el.getAttribute("data-i18n-en") || "";
-        const zh = el.getAttribute("data-i18n-zh") || "";
-  
-        if (el.classList.contains("detail-body")) {
-          // 正文用 innerHTML，保持段落结构
-          const html = (lang === "zh" && zh) ? zh : en;
-          if (html) el.innerHTML = html;
-        } else {
-          const text = (lang === "zh" && zh) ? zh : en;
-          if (text) el.textContent = text.trim();
-        }
-      });
-    }
-  
-    function setLanguage(lang) {
-      // 顶部按钮高亮
-      langButtons.forEach(btn => {
-        btn.classList.toggle("active", btn.dataset.lang === lang);
-      });
-  
-      // 更新主页面文字
-      applyLangToPage(lang);
-  
-      // 如果详情弹窗正在打开，也更新里面
-      const backdrop = document.getElementById("detailBackdrop");
-      if (backdrop && backdrop.style.display === "flex") {
-        const detailRoot = document.getElementById("detailContent");
-        if (detailRoot) applyLangToDetail(detailRoot, lang);
-      }
-  
-      document.documentElement.lang = (lang === "zh" ? "zh-Hans" : "en");
-      localStorage.setItem("dz_lang", lang);
-    }
-  
-    // 绑定按钮点击
-    langButtons.forEach(btn => {
-      btn.addEventListener("click", () => {
-        setLanguage(btn.dataset.lang);
-      });
+  });
+}
+
+function initLanguageToggle(){
+  const langButtons = $all(".lang-btn");
+
+  function setLanguage(lang){
+    // 顶部按钮高亮
+    langButtons.forEach(btn=>{
+      btn.classList.toggle("active", btn.dataset.lang === lang);
     });
-  
-    // 初始语言
-    const savedLang =
-  localStorage.getItem("dz_lang") ||
-  (document.body.getAttribute("data-lang") || "en");
+
+    // 更新主页面文字
+    applyLangToPage(lang);
+
+    // 若详情弹窗打开，同步更新
+    const backdrop = document.getElementById("detailBackdrop");
+    if (backdrop && backdrop.style.display === "flex") {
+      const detailRoot = document.getElementById("detailContent");
+      if (detailRoot) applyLangToDetail(detailRoot, lang);
+    }
+
+    setLang(lang);
+  }
+
+  // 绑定点击
+  langButtons.forEach(btn=>{
+    btn.addEventListener("click", ()=> setLanguage(btn.dataset.lang));
+  });
+
+  // 初始语言
+  setLanguage(getLang());
+}
 
 
+/* =========================
+   4) 表单：买/卖字段切换 + 校验 + 提交
+========================= */
+function setupNeedFields(needId, sellId, buyId){
+  const select = document.getElementById(needId);
+  const sell = document.getElementById(sellId);
+  const buy = document.getElementById(buyId);
+  if (!select || !sell || !buy) return;
 
-    setLanguage(savedLang);
+  function update(){
+    if (select.value === "sell") {
+      sell.style.display = "block";
+      buy.style.display = "none";
+    } else if (select.value === "buy") {
+      sell.style.display = "none";
+      buy.style.display = "block";
+    } else {
+      sell.style.display = "none";
+      buy.style.display = "none";
+    }
+  }
 
-    //20251221
+  select.addEventListener("change", update);
+  update();
+}
 
-    function validateNamePhone(form) {
-  const lang = localStorage.getItem("dz_lang") || "en";
-
+function validateNamePhone(form){
+  const lang = getLang();
   const name = (form.querySelector('input[name="name"]')?.value || "").trim();
-  const phoneInput = form.querySelector('input[name="phone"]');
-  let phone = (phoneInput?.value || "").trim();
+  const phone = (form.querySelector('input[name="phone"]')?.value || "").trim();
 
-  // 姓名必填
   if (!name) {
     alert(lang === "zh" ? "请填写姓名。" : "Please enter your name.");
     return false;
   }
-
-  // 电话必填 + 必须10位数字
   if (!phone) {
     alert(lang === "zh" ? "请填写电话。" : "Please enter your phone number.");
     return false;
   }
-
-  // 强制只允许10位数字（不允许 647-xxx / (647)xxx）
   if (!/^\d{10}$/.test(phone)) {
-    alert(lang === "zh" ? "电话必须是10位数字（不含空格和符号）。" : "Phone must be exactly 10 digits (numbers only).");
+    alert(lang === "zh"
+      ? "电话必须是10位数字（不含空格和符号）。"
+      : "Phone must be exactly 10 digits (numbers only).");
     return false;
   }
-
   return true;
 }
 
+async function submitFormToBackend(formId, successId, sourceTag){
+  const form = document.getElementById(formId);
+  const success = document.getElementById(successId);
+  if (!form || !success) return;
 
+  if (!validateNamePhone(form)) return;
 
-  
-    // ================== 提交表单到后端 ==================
-    async function submitFormToBackend(formId, successId, sourceTag) {
-      const form = document.getElementById(formId);
-      const success = document.getElementById(successId);
-      if (!form || !success) return;
-  
-if (!validateNamePhone(form)) return;
+  const formData = new FormData(form);
+  formData.append("source", sourceTag);
 
-const formData = new FormData(form);
-formData.append('source', sourceTag);
+  try{
+    const res = await fetch(FORM_ENDPOINT, { method:"POST", body: formData });
+    if (!res.ok) throw new Error("Network response was not ok");
 
- try {
-  const res = await fetch(FORM_ENDPOINT, {
-    method: 'POST',
-    body: formData
-  });
+    // 你的 Apps Script 如果返回 JSON，这里能正常 parse；否则也不会影响后面逻辑
+    try { await res.json(); } catch(e){}
 
-  if (!res.ok) throw new Error('Network response was not ok');
-  const data = await res.json();
-  console.log('Form submitted:', data);
+    success.style.display = "block";
+    setTimeout(()=>{ success.style.display = "none"; }, 1500);
 
-  success.style.display = 'block';
-  setTimeout(() => { success.style.display = 'none'; }, 1500);
+    form.reset();
 
-  form.reset();
+    // ✅ 弹窗表单：成功后自动关闭
+    if (sourceTag === "popup") {
+      closePopup(true);
+    }
+  }catch(err){
+    console.error("Form submit error:", err);
+    alert("提交失败，请稍后再试 / Failed to submit, please try again later.");
+  }
+}
 
-  // ✅ 如果是弹窗表单：提交成功后自动关闭弹窗
-  if (sourceTag === "popup") {
-    const backdrop = document.getElementById("popupBackdrop");
-    if (backdrop) backdrop.style.display = "none";
-    localStorage.setItem("dz_popup_seen", "1");
+function bindFormButtons(){
+  const inlineBtn = document.getElementById("inlineSubmitBtn");
+  if (inlineBtn) {
+    inlineBtn.addEventListener("click", ()=> {
+      submitFormToBackend("inlineContactForm", "inlineSuccess", "inline");
+    });
   }
 
-} catch (err) {
-  console.error('Form submit error:', err);
-  alert('提交失败，请稍后再试 / Failed to submit, please try again later.');
-} 
+  const popupBtn = document.getElementById("popupSubmitBtn");
+  if (popupBtn) {
+    popupBtn.addEventListener("click", ()=> {
+      submitFormToBackend("popupForm", "popupSuccess", "popup");
+    });
+  }
 }
-    // 绑定两个表单按钮
-    const inlineBtn = document.getElementById("inlineSubmitBtn");
-    if (inlineBtn) {
-      inlineBtn.addEventListener("click", () => {
-        submitFormToBackend("inlineContactForm", "inlineSuccess", "inline");
-      });
-    }
-  
-    const popupBtn = document.getElementById("popupSubmitBtn");
-    if (popupBtn) {
-      popupBtn.addEventListener("click", () => {
-        submitFormToBackend("popupForm", "popupSuccess", "popup");
-        localStorage.setItem("dz_popup_seen", "1");
-      });
-    }
-  
-    // ================== 停留 40 秒后弹出联系窗口（只出现一次） ==================
-    (function () {
-      const key = "dz_popup_seen";
-      if (localStorage.getItem(key) === "1") return;
-  
-      setTimeout(() => {
-        const backdrop = document.getElementById("popupBackdrop");
-        if (backdrop) backdrop.style.display = "flex";
-      }, 40000);
-  
-      const closeBtn = document.getElementById("popupCloseBtn");
-      if (closeBtn) {
-        closeBtn.addEventListener("click", () => {
-          const backdrop = document.getElementById("popupBackdrop");
-          if (backdrop) backdrop.style.display = "none";
-          localStorage.setItem(key, "1");
-        });
-      }
-    })();
 
 
-      // ================== 隐私政策弹窗 ==================
-  (function () {
-    const privacyBackdrop = document.getElementById('privacyBackdrop');
-    const privacyCloseBtn = document.getElementById('privacyCloseBtn');
+/* =========================
+   5) 弹窗：打开/关闭（含 40秒弹窗 + CTA 聚焦）
+========================= */
+function openPopupAndFocus(){
+  const backdrop = document.getElementById("popupBackdrop");
+  if (!backdrop) return;
 
-    // 点击表单里的 [Privacy Policy] / 【隐私政策】
-    document.addEventListener('click', (e) => {
-      const link = e.target.closest('.privacy-link');
-      if (!link) return;
+  backdrop.style.display = "flex";
+
+  // 聚焦到姓名输入框（优先弹窗表单）
+  setTimeout(()=>{
+    const nameInput = backdrop.querySelector('#popupForm input[name="name"]')
+      || backdrop.querySelector('input[name="name"]');
+    if (nameInput) nameInput.focus();
+  }, 50);
+}
+
+function closePopup(markSeen){
+  const backdrop = document.getElementById("popupBackdrop");
+  if (!backdrop) return;
+
+  backdrop.style.display = "none";
+
+  if (markSeen) localStorage.setItem("dz_popup_seen", "1");
+}
+
+// “下次再说”/点遮罩/ESC
+function initPopupCloseControls(){
+  const backdrop = document.getElementById("popupBackdrop");
+  const closeBtn = document.getElementById("popupCloseBtn");
+  if (!backdrop) return;
+
+  if (closeBtn) {
+    closeBtn.addEventListener("click", (e)=>{
       e.preventDefault();
-      if (privacyBackdrop) {
-        privacyBackdrop.style.display = 'flex';
-      }
+      e.stopPropagation();
+      closePopup(true);
     });
+  }
 
-    // 关闭按钮
-    if (privacyCloseBtn && privacyBackdrop) {
-      privacyCloseBtn.addEventListener('click', () => {
-        privacyBackdrop.style.display = 'none';
-      });
+  backdrop.addEventListener("click", (e)=>{
+    if (e.target === backdrop) closePopup(true);
+  });
 
-      // 点击遮罩空白处关闭
-      privacyBackdrop.addEventListener('click', (e) => {
-        if (e.target === privacyBackdrop) {
-          privacyBackdrop.style.display = 'none';
-        }
-      });
-    }
-  })();
+  document.addEventListener("keydown", (e)=>{
+    if (e.key === "Escape" && backdrop.style.display === "flex") closePopup(true);
+  });
+}
 
-  
-    // ================== 买房 / 卖房 需求切换（首页 + 弹窗） ==================
-    function setupNeedFields(needId, sellId, buyId) {
-      const select = document.getElementById(needId);
-      const sell   = document.getElementById(sellId);
-      const buy    = document.getElementById(buyId);
-  
-      if (!select || !sell || !buy) return;
-  
-      const update = () => {
-        if (select.value === "sell") {
-          sell.style.display = "block";
-          buy.style.display  = "none";
-        } else if (select.value === "buy") {
-          sell.style.display = "none";
-          buy.style.display  = "block";
-        } else {
-          sell.style.display = "none";
-          buy.style.display  = "none";
-        }
-      };
-  
-      select.addEventListener("change", update);
-      update();
-    }
-  
-    setupNeedFields("needTypeInline", "sellFieldsInline", "buyFieldsInline");
-    setupNeedFields("needTypePopup", "sellFieldsPopup", "buyFieldsPopup");
-  
-    // ================== 各栏目自动编号（#1, #2...） ==================
-    document.querySelectorAll(".content-section").forEach(section => {
-      const cards = section.querySelectorAll(".section-items .video-card");
-      cards.forEach((card, idx) => {
-        const noEl = card.querySelector(".item-no");
-        if (noEl) noEl.textContent = "#" + (idx + 1);
-      });
+// 40 秒弹一次（只一次）
+function initAutoPopup(){
+  const key = "dz_popup_seen";
+  if (localStorage.getItem(key) === "1") return;
+
+  setTimeout(()=>{
+    openPopupAndFocus();
+  }, 40000);
+}
+
+// Footer CTA：打开弹窗 + 聚焦
+function initFooterCTA(){
+  const btn = document.getElementById("footerCtaBtn");
+  if (!btn) return;
+
+  btn.addEventListener("click", (e)=>{
+    e.preventDefault();
+    e.stopPropagation();
+    openPopupAndFocus();
+  });
+}
+
+
+/* =========================
+   6) 隐私政策弹窗
+========================= */
+function initPrivacyModal(){
+  const privacyBackdrop = document.getElementById("privacyBackdrop");
+  const privacyCloseBtn = document.getElementById("privacyCloseBtn");
+  if (!privacyBackdrop) return;
+
+  // 点 [Privacy Policy]
+  document.addEventListener("click", (e)=>{
+    const link = e.target.closest(".privacy-link");
+    if (!link) return;
+    e.preventDefault();
+    privacyBackdrop.style.display = "flex";
+  });
+
+  // 关闭
+  if (privacyCloseBtn) {
+    privacyCloseBtn.addEventListener("click", ()=>{
+      privacyBackdrop.style.display = "none";
     });
-  
-    // ================== 详情弹窗 ==================  //20251216 添加转发功能
-    const detailBackdrop = document.getElementById("detailBackdrop");
-    const detailContent  = document.getElementById("detailContent");
-    const detailCloseBtn = document.getElementById("detailCloseBtn");
-  
-    function openDetailFromCard(card) {
-      if (!detailBackdrop || !detailContent) return;
-      const tpl = card.querySelector(".detail-template");
-      if (!tpl) {
-        console.warn("该条目没有 detail-template");
-        return;
-      }
-  
-      // 填充详情内容
-      detailContent.innerHTML = tpl.innerHTML;
+  }
+
+  privacyBackdrop.addEventListener("click", (e)=>{
+    if (e.target === privacyBackdrop) privacyBackdrop.style.display = "none";
+  });
+}
 
 
-      // ====== 自动插入 转发/分享按钮（标题下面）======20251216
-(function injectShareButton() {
-  const lang = localStorage.getItem("dz_lang") || "en";
-  const btnText = lang.startsWith('zh') ? '转发 / 分享' : 'Share';
+/* =========================
+   7) 卡片编号 + 详情弹窗 + 分享 + 深链接
+========================= */
+function assignCardIds(){
+  $all(".content-section").forEach(section=>{
+    const sid = section.id || "section";
+    const cards = $all(".section-items .video-card", section);
+    cards.forEach((card, idx)=>{
+      const id = `${sid}-item-${idx + 1}`;
+      card.id = id;
+      card.setAttribute("data-card-id", id);
+    });
+  });
+}
 
-  // 避免重复插入
-  if (detailContent.querySelector('.share-btn')) return;
+function numberCards(){
+  $all(".content-section").forEach(section=>{
+    const cards = $all(".section-items .video-card", section);
+    cards.forEach((card, idx)=>{
+      const noEl = $(".item-no", card);
+      if (noEl) noEl.textContent = "#" + (idx + 1);
+    });
+  });
+}
 
-  const title = detailContent.querySelector('.detail-title');
-  if (!title) return;
-
-  const btn = document.createElement('button');
-  btn.type = 'button';
-  btn.className = 'share-btn';
-  btn.textContent = btnText;
-
-  btn.addEventListener('click', () => doShare(card));
-  title.insertAdjacentElement('afterend', btn);
-})();
-
-
-function buildShareUrl(card) {
-  // 专业版：用卡片唯一ID作为 hash
-  const id = card.getAttribute('data-card-id') || card.id;
+function buildShareUrl(card){
+  const id = card.getAttribute("data-card-id") || card.id;
   return `${location.origin}${location.pathname}#${id}`;
 }
 
-async function doShare(card) {
-  const lang = localStorage.getItem("dz_lang") || "en";
-  const titleEl = card.querySelector(".video-title");
-  const title = titleEl ? titleEl.textContent.trim() : (lang.startsWith('zh') ? "房源详情" : "Listing Details");
+async function doShare(card){
+  const lang = getLang();
+  const titleEl = $(".video-title", card);
+  const title = titleEl ? titleEl.textContent.trim() : (lang === "zh" ? "房源详情" : "Listing Details");
   const url = buildShareUrl(card);
-  const text = lang.startsWith('zh') ? `分享给你：${title}` : `Sharing: ${title}`;
+  const text = lang === "zh" ? `分享给你：${title}` : `Sharing: ${title}`;
 
-  try {
+  try{
     if (navigator.share) {
       await navigator.share({ title, text, url });
       return;
     }
     await navigator.clipboard.writeText(url);
-    alert(lang.startsWith('zh')
+    alert(lang === "zh"
       ? "链接已复制，可以粘贴到微信/短信转发。"
       : "Link copied. Paste it to share.");
-  } catch (e) {
+  }catch(e){
     console.error("Share failed:", e);
-    alert(lang.startsWith('zh')
+    alert(lang === "zh"
       ? "转发失败，请手动复制地址栏链接。"
       : "Share failed. Please copy the URL manually.");
   }
 }
 
+function openDetailFromCard(card){
+  const detailBackdrop = document.getElementById("detailBackdrop");
+  const detailContent  = document.getElementById("detailContent");
+  if (!detailBackdrop || !detailContent) return;
 
-  
-      // 根据当前语言处理多语言内容
-      const currentLang = localStorage.getItem("dz_lang") || "en";
-      applyLangToDetail(detailContent, currentLang);
-  
-      // 自动分段：如果正文没有 <p>，按换行拆成段落
-      detailContent.querySelectorAll(".detail-body").forEach(body => {
-        const html = body.innerHTML.trim();
-        if (!html) return;
-        if (html.includes("<p")) return; // 已经有 <p> 就不动
-  
-        const raw = body.textContent.trim();
-        if (!raw) return;
-        const parts = raw
-          .split(/\r?\n\r?\n|[\r\n]+/)
-          .map(t => t.trim())
-          .filter(t => t.length > 0);
-  
-        body.innerHTML = parts.map(t => `<p>${t}</p>`).join("");
-      });
-  
-      // ====== 图片画廊页码逻辑（滑动条 + 当前页码） ======
-      const gallery = detailContent.querySelector(".detail-gallery-track");
-      if (gallery) {
-        const imgs = gallery.querySelectorAll("img");
-        if (imgs.length > 1) {
-          const indicator = document.createElement("div");
-          indicator.className = "detail-page-indicator";
-          indicator.textContent = `1 / ${imgs.length}`;
-  
-          const galleryWrapper = gallery.closest(".detail-gallery");
-          if (galleryWrapper) {
-            galleryWrapper.appendChild(indicator);
-          }
-  
-          const updateIndicator = () => {
-            const galleryRect = gallery.getBoundingClientRect();
-            const centerX = galleryRect.left + gallery.clientWidth / 2;
-  
-            let bestIndex = 0;
-            let bestDist = Infinity;
-  
-            imgs.forEach((img, idx) => {
-              const r = img.getBoundingClientRect();
-              const imgCenterX = r.left + r.width / 2;
-              const dist = Math.abs(imgCenterX - centerX);
-              if (dist < bestDist) {
-                bestDist = dist;
-                bestIndex = idx;
-              }
-            });
-  
-            indicator.textContent = `${bestIndex + 1} / ${imgs.length}`;
-          };
-  
-          updateIndicator();
-          gallery.addEventListener("scroll", () => {
-            window.requestAnimationFrame(updateIndicator);
-          });
-        }
-      }
-  
-      detailBackdrop.style.display = "flex";
+  const tpl = $(".detail-template", card);
+  if (!tpl) return;
+
+  detailContent.innerHTML = tpl.innerHTML;
+
+  // 插入分享按钮（避免重复）
+  if (!detailContent.querySelector(".share-btn")) {
+    const lang = getLang();
+    const btnText = (lang === "zh") ? "转发 / 分享" : "Share";
+    const title = detailContent.querySelector(".detail-title");
+    if (title) {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "share-btn";
+      btn.textContent = btnText;
+      btn.addEventListener("click", ()=> doShare(card));
+      title.insertAdjacentElement("afterend", btn);
     }
-  
-    // 点击封面图片打开详情
-document.addEventListener("click", (e) => {
-  const link = e.target.closest(".video-thumb-link");
-  if (!link) return;
-
-  const card = link.closest(".video-card");
-  if (!card) return;
-
-  // ✅ 如果是纯外链卡片，直接放行
-  if (card.dataset.detailType === "link-only") {
-    return; // 不 preventDefault
   }
 
-  e.preventDefault();
-  openDetailFromCard(card);
-});
+  // 语言应用到详情
+  applyLangToDetail(detailContent, getLang());
 
-  
-    // 关闭详情弹窗
-    if (detailCloseBtn && detailBackdrop) {
-      detailCloseBtn.addEventListener("click", () => {
-        detailBackdrop.style.display = "none";
-        detailContent.innerHTML = "";
-      });
-  
-      detailBackdrop.addEventListener("click", (e) => {
-        if (e.target === detailBackdrop) {
-          detailBackdrop.style.display = "none";
-          detailContent.innerHTML = "";
-        }
-      });
+  // 自动分段（如果正文里没有 <p>）
+  $all(".detail-body", detailContent).forEach(body=>{
+    const html = body.innerHTML.trim();
+    if (!html) return;
+    if (html.includes("<p")) return;
+
+    const raw = body.textContent.trim();
+    if (!raw) return;
+    const parts = raw
+      .split(/\r?\n\r?\n|[\r\n]+/)
+      .map(t=>t.trim())
+      .filter(Boolean);
+    body.innerHTML = parts.map(t=>`<p>${t}</p>`).join("");
+  });
+
+  // 画廊页码
+  const gallery = detailContent.querySelector(".detail-gallery-track");
+  if (gallery) {
+    const imgs = gallery.querySelectorAll("img");
+    if (imgs.length > 1) {
+      const indicator = document.createElement("div");
+      indicator.className = "detail-page-indicator";
+      indicator.textContent = `1 / ${imgs.length}`;
+
+      const wrapper = gallery.closest(".detail-gallery");
+      if (wrapper) wrapper.appendChild(indicator);
+
+      const update = ()=>{
+        const rect = gallery.getBoundingClientRect();
+        const centerX = rect.left + gallery.clientWidth / 2;
+
+        let bestIndex = 0;
+        let bestDist = Infinity;
+        imgs.forEach((img, idx)=>{
+          const r = img.getBoundingClientRect();
+          const cx = r.left + r.width / 2;
+          const dist = Math.abs(cx - centerX);
+          if (dist < bestDist) { bestDist = dist; bestIndex = idx; }
+        });
+
+        indicator.textContent = `${bestIndex + 1} / ${imgs.length}`;
+      };
+
+      update();
+      gallery.addEventListener("scroll", ()=> requestAnimationFrame(update));
     }
+  }
 
-// 默认：20251209 //20251216 添加转发功能
-document.addEventListener('DOMContentLoaded', () => {
-  initCollapsibleSections();
-  assignCardIds();
-  handleDeepLinkOpenDetail(); // 下一步会给你
-});
-
-
-function getCurrentLanguage() {
-  // 优先用你前面存的 dz_lang
-  const saved = localStorage.getItem('dz_lang');
-  if (saved === 'zh' || saved === 'en') return saved;
-
-  const htmlLang = document.documentElement.lang || '';
-  return htmlLang.startsWith('zh') ? 'zh' : 'en';
+  detailBackdrop.style.display = "flex";
 }
 
+function closeDetail(){
+  const detailBackdrop = document.getElementById("detailBackdrop");
+  const detailContent  = document.getElementById("detailContent");
+  if (!detailBackdrop || !detailContent) return;
+
+  detailBackdrop.style.display = "none";
+  detailContent.innerHTML = "";
+}
+
+function initDetailModal(){
+  const detailBackdrop = document.getElementById("detailBackdrop");
+  const detailCloseBtn = document.getElementById("detailCloseBtn");
+
+  // 点封面：打开详情（link-only 放行）
+  document.addEventListener("click", (e)=>{
+    const link = e.target.closest(".video-thumb-link");
+    if (!link) return;
+
+    const card = link.closest(".video-card");
+    if (!card) return;
+
+    // 外链卡片：直接放行，不 preventDefault
+    if (card.dataset.detailType === "link-only") return;
+
+    e.preventDefault();
+    openDetailFromCard(card);
+  });
+
+  // 关闭按钮 + 点遮罩关闭
+  if (detailCloseBtn) {
+    detailCloseBtn.addEventListener("click", closeDetail);
+  }
+  if (detailBackdrop) {
+    detailBackdrop.addEventListener("click", (e)=>{
+      if (e.target === detailBackdrop) closeDetail();
+    });
+  }
+}
+
+function findCardByHash(){
+  const hash = (location.hash || "").replace("#","").trim();
+  if (!hash) return null;
+  return document.getElementById(hash);
+}
+function handleDeepLinkOpenDetail(){
+  const card = findCardByHash();
+  if (!card) return;
+  card.scrollIntoView({ behavior:"smooth", block:"center" });
+  openDetailFromCard(card);
+}
+
+
+/* =========================
+   8) 折叠栏目（展开/收起）
+========================= */
 const LANG_TEXT = {
-  zh: {
-    expand: '点击展开',
-    collapse: '点击收起',
-  },
-  en: {
-    expand: 'Click to expand',
-    collapse: 'Click to collapse',
-  },
+  zh: { expand:"点击展开", collapse:"点击收起" },
+  en: { expand:"Click to expand", collapse:"Click to collapse" }
 };
 
-function initCollapsibleSections() {
-  const sections = document.querySelectorAll('.content-section');
+function getCurrentLanguageForHint(){
+  const saved = localStorage.getItem("dz_lang");
+  if (saved === "zh" || saved === "en") return saved;
+  const htmlLang = document.documentElement.lang || "";
+  return htmlLang.startsWith("zh") ? "zh" : "en";
+}
 
-  sections.forEach(section => {
-    // 默认折叠
-    section.classList.add('collapsed');
+function updateSectionHintText(section){
+  const lang = getCurrentLanguageForHint();
+  const texts = LANG_TEXT[lang] || LANG_TEXT.zh;
 
-    const items = section.querySelectorAll('.section-items > *');
-    items.forEach((item, index) => {
-      if (index >= 4) {
-        item.classList.add('hidden-when-collapsed');
-      }
+  const hint = section.querySelector(".section-expand-hint");
+  if (!hint) return;
+
+  hint.textContent = section.classList.contains("expanded")
+    ? texts.collapse
+    : texts.expand;
+}
+
+function toggleSection(sectionId){
+  const section = document.querySelector(`.content-section#${sectionId}`);
+  if (!section) return;
+
+  section.classList.toggle("expanded");
+  section.classList.toggle("collapsed");
+  updateSectionHintText(section);
+}
+
+function initCollapsibleSections(){
+  const sections = document.querySelectorAll(".content-section");
+
+  sections.forEach(section=>{
+    section.classList.add("collapsed");
+
+    const items = section.querySelectorAll(".section-items > *");
+    items.forEach((item, idx)=>{
+      if (idx >= 4) item.classList.add("hidden-when-collapsed");
     });
 
     updateSectionHintText(section);
   });
 
-  // 标题点击：找最近的 content-section
-  const titleToggles = document.querySelectorAll('.content-section .section-title');
-  titleToggles.forEach(el => {
-    el.style.cursor = 'pointer';
-    el.addEventListener('click', () => {
-      const section = el.closest('.content-section');
+  // 标题点击展开/收起
+  document.querySelectorAll(".content-section .section-title").forEach(el=>{
+    el.style.cursor = "pointer";
+    el.addEventListener("click", ()=>{
+      const section = el.closest(".content-section");
       if (!section || !section.id) return;
       toggleSection(section.id);
     });
   });
 
-  // 顶部菜单：从 href 里取 #id
-  const menuLinks = document.querySelectorAll('.menu-link[href^="#"]');
-  menuLinks.forEach(link => {
-    const hash = link.getAttribute('href');
-    const id = hash && hash.startsWith('#') ? hash.slice(1) : null;
+  // 顶部 menu 链接点击：同步展开/收起（不阻止滚动）
+  document.querySelectorAll('.menu-link[href^="#"]').forEach(link=>{
+    const hash = link.getAttribute("href");
+    const id = hash ? hash.slice(1) : null;
     if (!id) return;
 
-    link.addEventListener('click', () => {
+    link.addEventListener("click", ()=>{
       const sec = document.querySelector(`.content-section#${id}`);
-      if (sec) {
-        toggleSection(id);
-      }
-      // 不阻止默认行为，让页面正常滚动到对应位置
+      if (sec) toggleSection(id);
     });
   });
 
-  // 提示文字点击
-  const hintEls = document.querySelectorAll('.section-expand-hint[data-target]');
-  hintEls.forEach(hint => {
-    hint.addEventListener('click', () => {
+  // hint 文案点击
+  document.querySelectorAll(".section-expand-hint[data-target]").forEach(hint=>{
+    hint.addEventListener("click", ()=>{
       const id = hint.dataset.target;
       if (id) toggleSection(id);
     });
   });
 }
 
-//20251216 添加转发功能
-function assignCardIds() {
-  document.querySelectorAll('.content-section').forEach(section => {
-    const sid = section.id || 'section';
-    const cards = section.querySelectorAll('.section-items .video-card');
-    cards.forEach((card, idx) => {
-      // 例：listings-item-1 / videos-item-2 ...
-      const id = `${sid}-item-${idx + 1}`;
-      card.id = id;
-      card.setAttribute('data-card-id', id);
-    });
-  });
-}
-//20251216 添加转发功能 <--
 
-function toggleSection(sectionId) {
-  // 注意这里改成 .content-section#id
-  const section = document.querySelector(`.content-section#${sectionId}`);
-  if (!section) return;
+/* =========================
+   9) 总入口：DOMContentLoaded
+========================= */
+document.addEventListener("DOMContentLoaded", ()=>{
+  initYear();
+  loadVisitCounter();
 
-  section.classList.toggle('expanded');
-  section.classList.toggle('collapsed');
+  initLanguageToggle();
 
-  updateSectionHintText(section);
-}
+  setupNeedFields("needTypeInline", "sellFieldsInline", "buyFieldsInline");
+  setupNeedFields("needTypePopup",  "sellFieldsPopup",  "buyFieldsPopup");
 
-function updateSectionHintText(section) {
-  const lang = getCurrentLanguage();
-  const texts = LANG_TEXT[lang] || LANG_TEXT.zh;
+  bindFormButtons();
 
-  const hint = section.querySelector('.section-expand-hint');
-  if (!hint) return;
+  initPopupCloseControls();
+  initAutoPopup();
+  initFooterCTA();
 
-  if (section.classList.contains('expanded')) {
-    hint.textContent = texts.collapse;
-  } else {
-    hint.textContent = texts.expand;
-  }
-}
+  initPrivacyModal();
 
- //20251216 添加转发功能
-function findCardByHash() {
-  const hash = (location.hash || '').replace('#', '').trim();
-  if (!hash) return null;
-  return document.getElementById(hash);
-}
+  initCollapsibleSections();
+  assignCardIds();
+  numberCards();
 
-function handleDeepLinkOpenDetail() {
-  const card = findCardByHash();
-  if (!card) return;
-
-  // 滚动到该卡片附近（可选，但体验更好）
-  card.scrollIntoView({ behavior: 'smooth', block: 'center' });
-
-  // 自动打开详情
-  openDetailFromCard(card);
-}
-
-// 用户在站内切换 hash 时也能打开
-window.addEventListener('hashchange', () => {
+  initDetailModal();
   handleDeepLinkOpenDetail();
 });
 
-// ===== Footer CTA: open popup & focus on name field =====
-document.addEventListener("DOMContentLoaded", () => {
-  const btn = document.getElementById("footerCtaBtn");
-  const backdrop = document.getElementById("popupBackdrop");
-  if (!btn || !backdrop) return;
-
-  btn.addEventListener("click", (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-
-    // 打开弹窗
-    backdrop.style.display = "flex";
-
-    // 等弹窗渲染完成后，聚焦到“姓名”输入框
-    setTimeout(() => {
-      const nameInput = backdrop.querySelector(
-        'input[name="name"]'
-      );
-      if (nameInput) {
-        nameInput.focus();
-      }
-    }, 50); // 50ms 足够，避免浏览器未渲染完成
-  });
-});
+// hash 变化：自动打开对应详情
+window.addEventListener("hashchange", handleDeepLinkOpenDetail);
+</script>
 
 
-// ===== Popup close: Later button / click backdrop / ESC =====
-document.addEventListener("DOMContentLoaded", () => {
-  const backdrop = document.getElementById("popupBackdrop");
-  const closeBtn = document.getElementById("popupCloseBtn");
-  if (!backdrop) return;
-
-  function closePopup() {
-    backdrop.style.display = "none";
-    localStorage.setItem("dz_popup_seen", "1"); // 关掉就算看过一次
-  }
-
-  // “下次再说”
-  if (closeBtn) {
-    closeBtn.addEventListener("click", (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      closePopup();
-    });
-  }
-
-  // 点遮罩空白处关闭
-  backdrop.addEventListener("click", (e) => {
-    if (e.target === backdrop) closePopup();
-  });
-
-  // ESC 关闭
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" && backdrop.style.display === "flex") {
-      closePopup();
-    }
-  });
-});
-
-
-
-
-
-  </script>
   
 
 
