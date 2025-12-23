@@ -802,6 +802,23 @@ select[name="needType"]:focus {
   color:#cbd5f5;
 }
 
+.site-footer{
+  position: relative;
+  color:#e5e7eb;
+  padding:36px 16px 18px;
+}
+
+/* 关键：背景跨出任何 max-width 容器，铺满整个视口 */
+.site-footer::before{
+  content:"";
+  position:absolute;
+  top:0; bottom:0;
+  left:50%;
+  width:100vw;
+  transform:translateX(-50%);
+  background: linear-gradient(135deg, var(--primary), #012b52);
+  z-index:-1;
+}
 
 
   </style>
