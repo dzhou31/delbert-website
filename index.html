@@ -891,6 +891,39 @@ select[name="needType"]:focus {
   box-shadow:0 8px 20px rgba(0,0,0,0.25);
 }
 
+
+/* ===== Footer social icons: center + larger ===== */
+.site-footer .social-row {
+  display: flex;
+  justify-content: center;   /* 水平居中 */
+  align-items: center;
+  gap: 22px;                 /* 图标之间更松一点 */
+  margin-top: 14px;
+}
+
+.site-footer .social-row a {
+  width: 56px;               /* 原来 ~40 → 放大 */
+  height: 56px;
+  font-size: 1.6rem;         /* 图标本身放大 */
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.25);
+  color: #fff;
+
+  transition: transform .15s ease, background .15s ease;
+}
+
+.site-footer .social-row a:hover {
+  background: rgba(255,255,255,0.22);
+  transform: translateY(-2px);
+}
+
+
+
 /* 提交成功闪烁效果 */
 .success-flash {
   animation: successFlash 1.2s ease;
@@ -906,21 +939,36 @@ select[name="needType"]:focus {
 }
 
 
-/* ===== Footer section titles ===== */
+/* ===== Footer section titles with icons ===== */
 .site-footer .footer-title {
-  font-size: 1.05rem;      /* 比正文明显大 */
-  font-weight: 800;        /* 明显加粗 */
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  font-size: 1.05rem;
+  font-weight: 800;
   letter-spacing: 0.3px;
-  margin-bottom: 10px;
   line-height: 1.3;
+
+  margin-bottom: 10px;
 }
 
-/* 移动端略微缩小，避免压迫 */
+/* 图标样式 */
+.site-footer .footer-title i {
+  font-size: 0.95rem;
+  opacity: 0.9;
+}
+
+/* 移动端微调 */
 @media (max-width: 768px) {
   .site-footer .footer-title {
     font-size: 0.95rem;
   }
+  .site-footer .footer-title i {
+    font-size: 0.85rem;
+  }
 }
+
   
 
 /* ===== Section background stripes ===== */
@@ -3277,7 +3325,16 @@ By submitting forms on this website, you confirm that the information you provid
 <footer class="site-footer">
   <div class="footer-inner">
     <div class="footer-col">
-      <div class="footer-title" data-i18n-en="Why choose Delbert Zhou" data-i18n-zh="为什么选择 Delbert Zhou">Why choose Delbert Zhou</div>
+      
+
+      <div class="footer-title"
+           data-i18n-en="Why Choose Delbert Zhou"
+           data-i18n-zh="为什么选择 Delbert Zhou">
+          <i class="fa-solid fa-star"></i>
+          <span>为什么选择 Delbert Zhou</span>
+      </div>
+
+
       <div class="footer-sub" data-i18n-en="Service-first, end-to-end support, great value." data-i18n-zh="服务至上，全程无忧，性价比高。">Service-first, end-to-end support, great value.</div>
         <div class="footer-points"><div class="footer-point" data-i18n-en="Your nearby real estate expert, supported by a full-service team." data-i18n-zh="定位于您身边的房产专家。全程配套的团队。">Your nearby real estate expert, supported by a full-service team.</div>
            <div class="footer-point" data-i18n-en="20+ years of sales experience — negotiation focused." data-i18n-zh="20多年的销售经验，谈判专家。">20+ years of sales experience — negotiation focused.</div>
@@ -3287,7 +3344,13 @@ By submitting forms on this website, you confirm that the information you provid
         </div>
     </div>
     <div class="footer-col">
-      <div class="footer-title" data-i18n-en="Follow" data-i18n-zh="关注我">Follow</div>
+        <div class="footer-title"
+               data-i18n-en="Follow Me"
+               data-i18n-zh="关注我">
+            <i class="fa-solid fa-share-nodes"></i>
+            <span>关注我</span>
+        </div>
+
       <div class="footer-social">
         <a aria-label="YouTube" href="https://www.youtube.com/@Toronto.Delbertzhou" rel="noopener" target="_blank">
           <i class="fa-brands fa-youtube"></i></a><a aria-label="Facebook" href="https://www.facebook.com/delbert.zhou.7" rel="noopener" target="_blank">
@@ -3296,7 +3359,13 @@ By submitting forms on this website, you confirm that the information you provid
       </div>
     </div>
     <div class="footer-col">
-      <div class="footer-title" data-i18n-en="Contact" data-i18n-zh="联系我">Contact</div>
+      <div class="footer-title"
+            data-i18n-en="Contact"
+            data-i18n-zh="联系我">
+            <i class="fa-solid fa-phone"></i>
+            <span>联系我</span>
+      </div>
+
       <div class="footer-contact"><div data-i18n-en="Call / Text: 905-617-3988" data-i18n-zh="电话 / 短信：905-617-3988">Call / Text: 905-617-3988
 
          </div>
