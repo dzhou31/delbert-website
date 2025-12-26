@@ -935,6 +935,36 @@ select[name="needType"]:focus {
   transform: translateY(-2px);
 }
 
+/* ===== Footer 社媒图标：居中 + 放大 ===== */
+.site-footer .social-row {
+  display: flex;
+  justify-content: center;   /* 水平居中 */
+  align-items: center;
+  gap: 24px;                 /* 图标间距 */
+  margin-top: 16px;
+}
+
+.site-footer .social-row a {
+  width: 64px;               /* 原来 ~32-40 → 放大 */
+  height: 64px;
+  font-size: 1.8rem;         /* 图标本体放大 */
+  border-radius: 50%;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.3);
+  color: #fff;
+
+  transition: transform .15s ease, background .15s ease;
+}
+
+.site-footer .social-row a:hover {
+  background: rgba(255,255,255,0.25);
+  transform: translateY(-2px);
+}
 
 
 /* 提交成功闪烁效果 */
