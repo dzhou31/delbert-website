@@ -967,6 +967,57 @@ select[name="needType"]:focus {
 }
 
 
+/* ===== Footer 社媒：方案2（跨三列 + 全宽居中 + 放大）===== */
+
+/* 让“关注我”这一块跨满三列（桌面端） */
+@media (min-width: 901px){
+  .site-footer .footer-block.footer-follow{
+    grid-column: 1 / -1;         /* 跨 3 列 */
+    text-align: center;
+  }
+}
+
+/* 图标行：全宽居中 */
+.site-footer .footer-block.footer-follow .social-row{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:24px;
+  margin-top:14px;
+}
+
+/* 图标：放大一倍 */
+.site-footer .footer-block.footer-follow .social-row a{
+  width:64px;
+  height:64px;
+  border-radius:999px;
+
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+
+  background:rgba(255,255,255,0.15);
+  border:1px solid rgba(255,255,255,0.30);
+  color:#fff;
+  text-decoration:none;
+
+  transition: transform .15s ease, background .15s ease;
+}
+
+/* icon 本体大小 */
+.site-footer .footer-block.footer-follow .social-row a i{
+  font-size: 1.8rem;
+  line-height: 1;
+}
+
+.site-footer .footer-block.footer-follow .social-row a:hover{
+  background:rgba(255,255,255,0.25);
+  transform: translateY(-2px);
+}
+
+
+
+
 /* 提交成功闪烁效果 */
 .success-flash {
   animation: successFlash 1.2s ease;
@@ -3387,6 +3438,8 @@ By submitting forms on this website, you confirm that the information you provid
            <div class="footer-point" data-i18n-en="Flexible commission plans." data-i18n-zh="多种灵活佣金方案。">Flexible commission plans.</div>
         </div>
     </div>
+
+    <div class="footer-block footer-follow">
     <div class="footer-col">
         <div class="footer-title"
                data-i18n-en="Follow Me"
@@ -3401,6 +3454,7 @@ By submitting forms on this website, you confirm that the information you provid
             <i class="fa-brands fa-facebook"></i></a><a aria-label="Instagram" href="https://www.instagram.com/delbert_zhou/" rel="noopener" target="_blank">
               <i class="fa-brands fa-instagram"></i></a><a aria-label="小红书" href="https://www.xiaohongshu.com/user/profile/675888b0000000001d02d48f" rel="noopener" target="_blank"><i class="fa-solid fa-book-open"></i></a>
       </div>
+    </div>
     </div>
     <div class="footer-col">
       <div class="footer-title"
