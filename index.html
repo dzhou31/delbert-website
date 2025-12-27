@@ -983,6 +983,36 @@ select[name="needType"]:focus {
 @keyframes flashBg{0%{transform:scale(1); box-shadow:none;} 40%{transform:scale(1.01); box-shadow:0 0 0 3px rgba(26,127,55,0.22);} 100%{transform:scale(1); box-shadow:none;}}
 .flash-success{animation:flashBg 1.0s ease;}
 
+
+/* ===== Info Grid · 高端地产 Brochure 风 ===== */
+.info-grid{
+  position: relative;
+  border-radius: 14px;
+  padding: 16px 18px;
+  overflow: hidden;
+
+  background:
+    linear-gradient(
+      to right,
+      rgba(255,255,255,0.96) 0%,
+      rgba(255,255,255,0.92) 55%,
+      rgba(255,255,255,0.75) 100%
+    ),
+    url("/assets/brochure-bg.jpg");   /* 👈 换成你的背景图 */
+
+  background-size: cover;
+  background-position: right center;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+}
+
+/* 确保内容永远在最上层 */
+.info-grid > *{
+  position: relative;
+  z-index: 1;
+}
+
+
+
 </style>
 
 
